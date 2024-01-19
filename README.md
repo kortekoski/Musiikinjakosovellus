@@ -3,7 +3,7 @@ Sovelluksessa näkyy alueita, joista jokaisella on tietyn genren musiikkia. Alue
 Sovelluksen ominaisuuksia:
 - Käyttäjä voi kirjautua sisään ja ulos sekä luoda uuden tunnuksen.
 - Käyttäjä näkee sovelluksen etusivulla listan alueista sekä jokaisen alueen kappaleiden määrän ja viimeksi ladatun kappaleen ajankohdan. Alueet on jaettu genrejen perusteella.
-- Käyttäjä voi ladata sovellukseen kappaleen, jolle hän antaa otsikon, genren, kuvauksen ja mahdollisia aihetunnisteita. 
+- Käyttäjä voi ladata sovellukseen kappaleen, jolle hän antaa nimen, genren, kuvauksen ja mahdollisia aihetunnisteita. 
 - Käyttäjä voi ladata sovellukseen kappaleista useita versioita, jotka näkyvät eri välilehdillä kappalesivulla. Uuden version kuvaukseen käyttäjä voi merkitä, mitä versiossa on muutettu ja missä kohdassa.
 - Käyttäjä voi asettaa kappaleen yksityiseksi ja määrittää, keillä on pääsy siihen.
 - Käyttäjä voi kirjoittaa kommentin omaan tai toisen lataamaan kappaleeseen. Kommentin voi liittää tiettyyn kohtaan kappaletta/versiota.
