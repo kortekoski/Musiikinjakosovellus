@@ -6,7 +6,7 @@ Sovelluksen ominaisuuksia:
 - Käyttäjä voi ladata sovellukseen kappaleen, jolle hän antaa nimen, genren, kuvauksen ja mahdollisia aihetunnisteita. 
 - Käyttäjä voi ladata sovellukseen kappaleista useita versioita, jotka näkyvät eri välilehdillä kappalesivulla. Uuden version kuvaukseen käyttäjä voi merkitä, mitä versiossa on muutettu ja missä kohdassa.
 - Käyttäjä voi asettaa kappaleen yksityiseksi ja määrittää, keillä on pääsy siihen.
-- Käyttäjä voi kirjoittaa kommentin omaan tai toisen lataamaan kappaleeseen. Kommentin voi liittää tiettyyn kohtaan kappaletta/versiota.
+- Käyttäjä voi kirjoittaa kommentin omaan tai toisen lataamaan kappaleeseen.
 - Käyttäjä voi muokata lataamansa kappaleen sekä kirjoittamansa kommentin sisältöä. Käyttäjä voi myös poistaa kappaleen tai kommentin.
 - Käyttäjä voi etsiä kappaleita sanojen tai aihetunnisteiden perusteella (esim. genre).
 - Ylläpitäjä voi lisätä ja poistaa kappaleita tai kommentteja. Ylläpitäjä näkee kaikki lataukset, myös yksityiseksi asetetut.
