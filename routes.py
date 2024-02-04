@@ -98,9 +98,10 @@ def signup():
 def registeruser():
     username = request.form["username"]
     password = request.form["password"]
+    admin = request.form["admin"]
     hash_value = generate_password_hash(password)
-    sql = "INSERT INTO Users (username, password) VALUES (:username, :password)"
-    db.session.execute(text(sql), {"username":username, "password":hash_value})
+    sql = "INSERT INTO Users (username, password, admin) VALUES (:username, :password, :admin)"
+    db.session.execute(text(sql), {"username":username, "password":hash_value, "admin":admin})
     db.session.commit()
     return "User added to database"
 

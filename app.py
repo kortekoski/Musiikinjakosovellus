@@ -6,3 +6,6 @@ app.secret_key = getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 
 import routes
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
