@@ -1,0 +1,9 @@
+{% include "loginbox.html" %}
+<h1>Search results:</h1>
+{% if tracks %}
+    {% for track in tracks %}
+    <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.name }}</a></li>
+    {% endfor %}
+{% else %}
+    <h3>No results!</h3>
+{% endif %}

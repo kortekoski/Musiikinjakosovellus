@@ -1,0 +1,23 @@
+{% include "loginbox.html" %}
+<h1>Profile: {{ tracks[0].username }}</h1>
+<h2>Uploaded tracks</h2>
+{% if not tracks %}
+    <p>Nothing here!</p>
+{% else %}
+    <ul>
+    {% for track in tracks%}
+        {% if track.visible %}
+            {% if track.private %}
+                {% if session.userid == tracks[0].userid or session.admin %}
+                    <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a>(PRIVATE)</li>
+                {% endif %}
+            {% else %}
+                <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>
+            {% endif %}
+            {% if session.userid == tracks[0].userid %}
+                <a href="/edittrack/{{ track.trackid }}">Edit track info</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}

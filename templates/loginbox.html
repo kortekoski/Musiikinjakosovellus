@@ -1,0 +1,19 @@
+{% if session.username %}
+    <p>Logged in as <b>{{ session.username }}</b></p>
+    <p><a href="/profile/{{session.userid}}">My profile</a></p>
+    <p>
+        <a href="/logout">Log out</a>
+    </p>
+    <p>
+        <a href="/upload">Upload track</a>
+    </p>
+{% else %}
+    <p>Not logged in</p>
+    <a href="/login">Log in or sign up</a>
+{% endif %}
+<p><a href="/">Return to index</a></p>
+<form action="/result" method="GET">
+    Search: <input type="text" name="query">
+    <br>
+    <input type="submit" value="Send">
+</form>

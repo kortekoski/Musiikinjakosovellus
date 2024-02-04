@@ -1,0 +1,12 @@
+{% include "loginbox.html" %}
+<h1>Musiikinjakosovellus</h1>
+<h2>Genres</h2>
+<ul>
+    {% for genre in genres %}
+        {% if info[genre.id][0] == 0%}
+            <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}})</li>
+        {% else %}
+            <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}}, last uploaded {{info[genre.id][1][0].ctime()}})</li>
+        {% endif %}
+    {% endfor %}
+</ul>

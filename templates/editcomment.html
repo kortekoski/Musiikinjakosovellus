@@ -1,0 +1,7 @@
+<h1>Edit comment</h1>
+<form action="/sendedit" method="POST">
+    <textarea id="editedcomment" name="editedcomment" rows="5" cols="40" autofocus>{{ comment.content }}</textarea>
+    <input type="hidden" name="track_id" value="{{comment.track_id}}">
+    <input type="hidden" name="comment_id" value="{{comment.id}}">
+    <p><input type="submit" value="Send"></p>
+</form>

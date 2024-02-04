@@ -1,0 +1,32 @@
+<form action="/sendtrackedit" method="POST">
+    <p> Name <br>
+        <input type="text" id="trackname" name="trackname" value="{{ trackinfo.name }}">
+    <p> Genre <br>
+        <select id="genre" name="genre">
+            {% for genre in genres %}
+                <!-- The previous genre is selected on default. -->
+                {% if trackinfo.genre_id == genre.id %}
+                    <option value="{{ genre.id }}" selected>{{ genre.name }}</option>
+                {% else %}
+                    <option value="{{ genre.id }}">{{ genre.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    <p> Description<br>
+        <textarea id="description" name="description" rows="5" cols="40">{{ trackinfo.description }}</textarea>
+    <p> Keywords (separate with a space)<br>
+        <textarea id="keywords" name="keywords" rows="3" cols="40" placeholder="e.g. trash nottrash"></textarea>
+    <p> Set as private?
+        <select id="private" name="private">
+            {% if trackinfo.private %}
+                <option value="false">No</option>
+                <option value="true" selected>Yes</option>
+            {% else %}
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            {% endif %}
+        </select>
+    <p>
+        <input type="hidden" id="trackid" name="trackid" value="{{trackinfo.trackid}}">
+        <input type="submit" value="Send">
+</form>
