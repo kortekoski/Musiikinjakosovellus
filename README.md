@@ -20,6 +20,7 @@ Sovellus ei ainakaan tällä hetkellä toimi Fly.iossa, joten testaus on tehtäv
 Kloonaa tämä repositorio omalle koneellesi ja siirry sen juurikansioon. Luo kansioon .env-tiedosto ja määritä sen sisältö seuraavanlaiseksi:
 
 DATABASE_URL=postgresql:///käyttäjänimi
+
 SECRET_KEY=(salainen avain)
 
 Aktivoi virtuaaliympäristö ja asenna sovelluksen riippuvuudet komennoilla
