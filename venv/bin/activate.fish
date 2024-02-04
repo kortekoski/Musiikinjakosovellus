@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/mikomi/Musiikinjakosovellus/venv"
+set -gx VIRTUAL_ENV "/home/mikomi/TSOHA/Musiikinjakosovellus/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
