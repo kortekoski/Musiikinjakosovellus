@@ -14,8 +14,15 @@
             {% else %}
                 <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>
             {% endif %}
-            {% if session.userid == tracks[0].userid %}
+            {% if session.userid == track.userid %}
+            <p>
                 <a href="/edittrack/{{ track.trackid }}">Edit track info</a>
+            <p>
+                <form action="/deletetrack" method="POST">
+                    <input type="hidden" name="trackid" value="{{ track.trackid }}">
+                    <input type="hidden" name="userid" value="{{ track.userid }}">
+                    <input type="submit" value="Delete track">
+                </form>
             {% endif %}
         {% endif %}
     {% endfor %}

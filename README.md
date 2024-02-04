@@ -28,7 +28,9 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r ./requirements.txt
 
-Skeeman saa asennettua komennolla psql < schema.sql. 
+Skeeman saa asennettua komennolla psql < schema.sql.
+
+Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A', 'B', 'C', 'D');. 
 
 Lopuksi sovellus käynnistyy komennolla flask run.
 
@@ -39,6 +41,6 @@ Lopuksi sovellus käynnistyy komennolla flask run.
 - Käyttäjä voi ladata sovellukseen kappaleen, jolle hän antaa nimen, genren ja kuvauksen.
 - Käyttäjä voi asettaa kappaleen yksityiseksi.
 - Käyttäjä voi kirjoittaa kommentin omaan tai toisen lataamaan kappaleeseen.
-- Käyttäjä voi muokata lataamansa kappaleen sekä kirjoittamansa kommentin sisältöä. Käyttäjä voi myös poistaa kappaleen tai kommentin.
+- Käyttäjä voi muokata lataamansa kappaleen sekä kirjoittamansa kommentin sisältöä. Käyttäjä voi myös poistaa kommentin.
 - Käyttäjä voi etsiä kappaleita sanojen perusteella.
 - Ylläpitäjä voi lisätä ja poistaa kappaleita tai kommentteja. Ylläpitäjä näkee kaikki lataukset, myös yksityiseksi asetetut.

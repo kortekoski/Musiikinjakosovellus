@@ -13,6 +13,7 @@
                     </form>
                 {% endif %}
             {% endif %}
+            {% if track.visible and session.username == track.username %}
             {% if track.private and session.admin %}
                 <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)</li>
                 <form action="/deletetrack" method="POST">
