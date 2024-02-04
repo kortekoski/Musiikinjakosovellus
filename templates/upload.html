@@ -1,0 +1,22 @@
+<form action="/send" method="POST" enctype="multipart/form-data">
+    File: <input type="file" name="file">
+    <p> Name <br>
+        <input type="text" id="trackname" name="trackname">
+    <p> Genre <br>
+        <select id="genre" name="genre">
+            {% for genre in genres %}
+                <option value="{{ genre.id }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select>
+    <p> Description<br>
+        <textarea id="description" name="description" rows="5" cols="40"></textarea>
+    <p> Keywords (separate with a space)<br>
+        <textarea id="keywords" name="keywords" rows="3" cols="40" placeholder="e.g. trash nottrash"></textarea>
+    <p> Set as private?
+        <select id="private" name="private">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+        </select>
+    <p>
+        <input type="submit" value="Send">
+</form>

@@ -1,0 +1,16 @@
+<h1>Login</h1>
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/login");
+    </script>
+{% endif %}
+<form action="/login" method="POST">
+    <p>Username:<br>
+    <input type="text" name="username"></p>
+    <p>Password:<br>
+    <input type="text" name="password"></p>
+    <input type="submit" value="Log in">
+</form>
+<p><a href="/signup">Not a user yet? Create a new account here.</a></p>

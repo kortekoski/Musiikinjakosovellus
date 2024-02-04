@@ -1,0 +1,29 @@
+{% include "loginbox.html" %}
+{% if genretracks %}
+    <h1>{{ genretracks[0].genrename }}</h1>
+    <ul>
+        {% for track in genretracks %}
+            {% if track.visible and not track.private %}
+                <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a></li>
+                {% if session.admin == True %}
+                    <form action="/deletetrack" method="POST">
+                        <input type="hidden" name="trackid" value="{{ track.id }}">
+                        <input type="hidden" name="genreid" value="{{ track.genre_id}}">
+                        <input type="submit" value="Admin: delete track">
+                    </form>
+                {% endif %}
+            {% endif %}
+            {% if track.private and session.admin %}
+                <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)</li>
+                <form action="/deletetrack" method="POST">
+                    <input type="hidden" name="trackid" value="{{ track.id }}">
+                    <input type="hidden" name="genreid" value="{{ track.genre_id}}">
+                    <input type="submit" value="Admin: delete track">
+                </form>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% else %}
+    <h1>No tracks here!</h1>
+{% endif %}
+<p><a href="/">Back to index</a></p>
