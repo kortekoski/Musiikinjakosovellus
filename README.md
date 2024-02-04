@@ -32,7 +32,7 @@ $ pip install -r ./requirements.txt
 
 Skeeman saa asennettua komennolla psql < schema.sql.
 
-Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A', 'B', 'C', 'D');. 
+Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A'), ('B'), ('C'), ('D');. 
 
 Lopuksi sovellus käynnistyy komennolla flask run.
 
