@@ -1,10 +1,16 @@
-# fly.toml app configuration file generated for musiikinjakosovellus-neo on 2024-02-04T19:25:30+02:00
+# fly.toml app configuration file generated for musiikinjakosovellus on 2024-02-04T21:03:13+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'musiikinjakosovellus-neo'
+app = 'musiikinjakosovellus'
 primary_region = 'arn'
+
+[build]
+  builder = 'paketobuildpacks/builder:base'
+
+[env]
+  PORT = '5000'
 
 [http_service]
   internal_port = 5000
