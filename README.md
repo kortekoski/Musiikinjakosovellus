@@ -15,7 +15,7 @@ Sovelluksen ominaisuuksia:
 
 ## Testausohjeet
 
-Sovellus ei ainakaan tällä hetkellä toimi Fly.iossa, joten testaus on tehtävä lokaalisti. Jos se toimiikin testaushetkellä, osoite on https://musiikinjakosovellus.fly.dev/.
+~~Sovellus ei ainakaan tällä hetkellä toimi Fly.iossa, joten testaus on tehtävä lokaalisti.~~ Sovellus on testattavissa osoitteessa https://musiikinjakosovellus.fly.dev/. Alla on myös ohjeet testaukseen lokaalisti.
 
 Kloonaa tämä repositorio omalle koneellesi ja siirry sen juurikansioon. Luo kansioon .env-tiedosto ja määritä sen sisältö seuraavanlaiseksi:
 
@@ -33,7 +33,7 @@ $ pip install -r ./requirements.txt
 
 Skeeman saa asennettua komennolla psql < schema.sql.
 
-Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A'), ('B'), ('C'), ('D');. 
+Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A', 'B', 'C', 'D');. 
 
 Lopuksi sovellus käynnistyy komennolla flask run.
 
