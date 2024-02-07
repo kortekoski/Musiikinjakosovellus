@@ -15,6 +15,7 @@ CREATE TABLE Tracks (
     genre_id INTEGER REFERENCES Genres ON DELETE CASCADE ON UPDATE CASCADE, 
     date TIMESTAMP, 
     data BYTEA,
+    description TEXT,
     visible BOOLEAN DEFAULT TRUE,
     private BOOLEAN);
 
