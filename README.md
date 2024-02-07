@@ -20,17 +20,20 @@ Sovellus ei ainakaan tällä hetkellä toimi Fly.iossa, joten testaus on tehtäv
 Kloonaa tämä repositorio omalle koneellesi ja siirry sen juurikansioon. Luo kansioon .env-tiedosto ja määritä sen sisältö seuraavanlaiseksi:
 
 DATABASE_URL=postgresql:///käyttäjänimi
+
 SECRET_KEY=(salainen avain)
 
 Aktivoi virtuaaliympäristö ja asenna sovelluksen riippuvuudet komennoilla
 
 $ python3 -m venv venv
+
 $ source venv/bin/activate
+
 $ pip install -r ./requirements.txt
 
 Skeeman saa asennettua komennolla psql < schema.sql.
 
-Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A', 'B', 'C', 'D');. 
+Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A'), ('B'), ('C'), ('D');. 
 
 Lopuksi sovellus käynnistyy komennolla flask run.
 
