@@ -5,21 +5,23 @@
         {% for track in genretracks %}
             {% if track.visible and not track.private %}
                 <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a></li>
-                {% if session.admin == True %}
+                {% if session.admin or session.userid == track.user_id %}
                     <form action="/deletetrack" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
                         <input type="hidden" name="genreid" value="{{ track.genre_id}}">
-                        <input type="submit" value="Admin: delete track">
+                        <input type="submit" value="Delete track">
                     </form>
                 {% endif %}
             {% endif %}
-            {% if track.private and session.admin %}
-                <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)</li>
-                <form action="/deletetrack" method="POST">
-                    <input type="hidden" name="trackid" value="{{ track.id }}">
-                    <input type="hidden" name="genreid" value="{{ track.genre_id}}">
-                    <input type="submit" value="Admin: delete track">
-                </form>
+            {% if track.visible and track.private %}
+                {% if session.admin or session.userid == track.user_id %}
+                    <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)</li>
+                    <form action="/deletetrack" method="POST">
+                        <input type="hidden" name="trackid" value="{{ track.id }}">
+                        <input type="hidden" name="genreid" value="{{ track.genre_id}}">
+                        <input type="submit" value="Delete track">
+                    </form>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </ul>

@@ -14,7 +14,7 @@
             {% else %}
                 <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>
             {% endif %}
-            {% if session.userid == track.userid %}
+            {% if session.userid == track.userid or session.admin %}
             <p>
                 <a href="/edittrack/{{ track.trackid }}">Edit track info</a>
             <p>

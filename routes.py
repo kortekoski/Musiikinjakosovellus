@@ -20,7 +20,10 @@ def index():
             WHERE genre_id=:genreid AND visible=True AND private=False"), \
             {"genreid":genreid}).fetchone()[0]
         # Get the last uploaded track (skip invisible and private tracks)
-        last_uploaded = db.session.execute(text("SELECT date FROM Tracks WHERE genre_id=:genreid AND visible=True AND private=False ORDER BY date DESC"), {"genreid":genreid}).fetchone()
+        last_uploaded = db.session.execute(text("SELECT date FROM Tracks \
+            WHERE genre_id=:genreid AND visible=True AND private=False \
+            ORDER BY date DESC"), \
+            {"genreid":genreid}).fetchone()
 
         infotuple = (count, last_uploaded)
         info[genreid] = infotuple
@@ -40,7 +43,7 @@ def searchresult():
 
 @app.route("/genre/<int:id>")
 def genre(id):
-    sql = "SELECT Tracks.id, Tracks.name AS trackname, Tracks.visible, Tracks.private, Genres.name AS genrename, Genres.id AS genre_id, Users.username from Tracks \
+    sql = "SELECT Tracks.id, Tracks.user_id, Tracks.name AS trackname, Tracks.visible, Tracks.private, Genres.name AS genrename, Genres.id AS genre_id, Users.username from Tracks \
         LEFT JOIN Genres ON Tracks.genre_id=Genres.id \
         LEFT JOIN Users ON Tracks.user_id=Users.id\
         WHERE Tracks.genre_id=:id"
@@ -57,13 +60,12 @@ def profile(id):
 
 @app.route("/deletetrack", methods=["POST"])
 def deletetrack():
-
-    # The track isn't really deleted, only turned invisible.
+    """This route is for deleting tracks. Deleting a track turns it invisible."""
     trackid = request.form.get("trackid")
     genreid = request.form.get("genreid")
     userid = request.form.get("userid")
 
-    # Redirection depends on where the track was deleted from, the genre page or the profile page.
+    # Redirection depends on where the track was deleted from: the genre page or the profile page.
     # TODO: Confirmation for the deletion.
     if genreid:
         sql = "UPDATE Tracks SET visible=False WHERE id=:trackid"
@@ -71,12 +73,14 @@ def deletetrack():
         db.session.commit()
         genreurl = url_for('genre', id=genreid)
         return redirect(genreurl)
-    elif userid:
+    if userid:
         sql = "UPDATE Tracks SET visible=False WHERE id=:trackid"
         db.session.execute(text(sql), {"trackid":trackid})
         db.session.commit()
         profileurl = url_for('profile', id=userid)
         return redirect(profileurl)
+
+    return error.throw(403)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
