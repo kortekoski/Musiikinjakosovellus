@@ -16,16 +16,25 @@ def index():
     for genre in genres:
         genreid = genre.id
         # Get counts of the tracks in each genre (skip invisible and private tracks)
-        count = db.session.execute(text("SELECT COUNT(name) FROM Tracks \
+        public_count = db.session.execute(text("SELECT COUNT(name) FROM Tracks \
             WHERE genre_id=:genreid AND visible=True AND private=False"), \
+            {"genreid":genreid}).fetchone()[0]
+        # Get counts of the private tracks in each genre
+        private_count = db.session.execute(text("SELECT COUNT(name) FROM Tracks \
+            WHERE genre_id=:genreid AND visible=True AND private=True"), \
             {"genreid":genreid}).fetchone()[0]
         # Get the last uploaded track (skip invisible and private tracks)
         last_uploaded = db.session.execute(text("SELECT date FROM Tracks \
             WHERE genre_id=:genreid AND visible=True AND private=False \
             ORDER BY date DESC"), \
             {"genreid":genreid}).fetchone()
+        # Get the last uploaded track from all tracks
+        last_uploaded_admin = db.session.execute(text("SELECT date FROM Tracks \
+            WHERE genre_id=:genreid AND visible=True \
+            ORDER BY date DESC"), \
+            {"genreid":genreid}).fetchone()
 
-        infotuple = (count, last_uploaded)
+        infotuple = (public_count, private_count, last_uploaded, last_uploaded_admin)
         info[genreid] = infotuple
 
     return render_template("index.html", genres=genres, info=info)
@@ -43,17 +52,20 @@ def searchresult():
 
 @app.route("/genre/<int:id>")
 def genre(id):
-    sql = "SELECT Tracks.id, Tracks.user_id, Tracks.name AS trackname, Tracks.visible, Tracks.private, Genres.name AS genrename, Genres.id AS genre_id, Users.username from Tracks \
+    sql = "SELECT Tracks.id, Tracks.user_id, Tracks.name AS trackname, Tracks.private, Genres.name AS genrename, Genres.id AS genre_id, Users.username from Tracks \
         LEFT JOIN Genres ON Tracks.genre_id=Genres.id \
         LEFT JOIN Users ON Tracks.user_id=Users.id\
-        WHERE Tracks.genre_id=:id"
+        WHERE Tracks.genre_id=:id AND Tracks.visible=True"
     result = db.session.execute(text(sql), {"id":id})
     genretracks = result.fetchall()
     return render_template("genre.html", genretracks=genretracks)
 
 @app.route("/profile/<int:id>")
 def profile(id):
-    sql = "SELECT Users.id AS userid, Users.username, Tracks.id AS trackid, Tracks.name, Tracks.visible, Tracks.private FROM Users LEFT JOIN Tracks ON Users.id=Tracks.user_id WHERE Users.id=:id"
+    sql = "SELECT Users.id AS userid, Users.username, Tracks.id AS trackid, \
+        Tracks.name, Tracks.private \
+        FROM Users LEFT JOIN Tracks ON Users.id=Tracks.user_id \
+        WHERE Users.id=:id AND Tracks.visible=True"
     result = db.session.execute(text(sql), {"id":id})
     tracks = result.fetchall()
     return render_template("profile.html", id=id, tracks=tracks)
@@ -130,15 +142,14 @@ def logout():
     return redirect("/")
 
 @app.route("/upload")
-def test():
+def upload():
     sql = "SELECT * FROM Genres"
     result = db.session.execute(text(sql))
     genres = result.fetchall()
-    print(genres)
     return render_template("upload.html", genres=genres)
 
 @app.route("/send", methods=['POST'])
-def upload():
+def send():
     file = request.files["file"]
     userid = session["userid"]
     name = request.form["trackname"]
@@ -162,6 +173,36 @@ def upload():
     # TODO: Return "upload successful" or whatever and redirect to the created track page. Could also redirect to the "my tracks" page, which doesn't exist yet.
     genre_url = url_for('genre', id=genreid)
     return redirect(genre_url)
+
+@app.route("/uploadversion/<int:track_id>")
+def uploadversion(track_id):
+    sql = "SELECT name FROM Tracks WHERE id=:trackid"
+    result = db.session.execute(text(sql), {"trackid":track_id})
+    track_name = result.fetchone()[0]
+    return render_template("upload_version.html", track_id=track_id, track_name=track_name)
+
+@app.route("/sendversion", methods=['POST'])
+def sendversion():
+    """Uploads a new version of an existing track to showcase alongside previous versions."""
+    file = request.files["file"]
+    track_id = request.form["track_id"]
+    changelog = request.form["changelog"]
+
+    data = file.read()
+    # TODO: Check file?
+    # The version number is determined by fetching versions with the correct
+    # track id and adding one. The original becomes "version 0".
+    version_count = db.session.execute(text("SELECT COUNT(id) FROM Versions \
+            WHERE track_id=:trackid"), \
+            {"trackid":track_id}).fetchone()[0]
+    version_number = version_count + 1
+
+    sql = "INSERT INTO Versions (version_number, track_id, data, changelog) \
+        VALUES (:version_number, :trackid, :data, :changelog)"
+    db.session.execute(text(sql), {"version_number":version_number, "trackid":track_id, "data":data, "changelog":changelog})
+    db.session.commit()
+
+    return "OK"
 
 @app.route("/edittrack/<int:id>")
 def edittrack(id):

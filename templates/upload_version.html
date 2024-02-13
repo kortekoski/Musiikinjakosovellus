@@ -1,0 +1,10 @@
+{% include "loginbox.html" %}
+<h2>Upload a new version of "{{track_name}}"</h2>
+<form action="/sendversion" method="POST" enctype="multipart/form-data">
+    File: <input type="file" name="file">
+    <p> Changelog<br>
+        <textarea id="changelog" name="changelog" rows="5" cols="40" placeholder="e.g. added a massive saw lead at 1:30"></textarea>
+    <p>
+        <input type="hidden" name="track_id" value="{{track_id}}">
+        <input type="submit" value="Send">
+</form>

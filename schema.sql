@@ -22,7 +22,9 @@ CREATE TABLE Tracks (
 CREATE TABLE Versions (
     id SERIAL PRIMARY KEY, 
     version_number INTEGER, 
-    track_id INTEGER REFERENCES Tracks ON DELETE CASCADE);
+    track_id INTEGER REFERENCES Tracks ON DELETE CASCADE,
+    data BYTEA,
+    changelog TEXT);
 
 CREATE TABLE Keywords (
     id SERIAL PRIMARY KEY, 

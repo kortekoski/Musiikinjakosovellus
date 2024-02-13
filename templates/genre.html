@@ -3,7 +3,7 @@
     <h1>{{ genretracks[0].genrename }}</h1>
     <ul>
         {% for track in genretracks %}
-            {% if track.visible and not track.private %}
+            {% if not track.private %}
                 <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a></li>
                 {% if session.admin or session.userid == track.user_id %}
                     <form action="/deletetrack" method="POST">
@@ -13,7 +13,7 @@
                     </form>
                 {% endif %}
             {% endif %}
-            {% if track.visible and track.private %}
+            {% if track.private %}
                 {% if session.admin or session.userid == track.user_id %}
                     <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)</li>
                     <form action="/deletetrack" method="POST">

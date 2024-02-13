@@ -6,24 +6,26 @@
 {% else %}
     <ul>
     {% for track in tracks%}
-        {% if track.visible %}
-            {% if track.private %}
-                {% if session.userid == tracks[0].userid or session.admin %}
-                    <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a>(PRIVATE)</li>
-                {% endif %}
-            {% else %}
-                <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>
+        {% if track.private %}
+            {% if session.userid == tracks[0].userid or session.admin %}
+                <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a>(PRIVATE)</li>
             {% endif %}
-            {% if session.userid == track.userid or session.admin %}
-            <p>
-                <a href="/edittrack/{{ track.trackid }}">Edit track info</a>
-            <p>
-                <form action="/deletetrack" method="POST">
-                    <input type="hidden" name="trackid" value="{{ track.trackid }}">
-                    <input type="hidden" name="userid" value="{{ track.userid }}">
-                    <input type="submit" value="Delete track">
-                </form>
-            {% endif %}
+        {% else %}
+            <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>
+        {% endif %}
+        {% if session.userid == track.userid or session.admin %}
+        <p>
+            <form action="/edittrack/{{ track.trackid }}">
+                <input type="submit" value="Edit track info">
+            </form>
+            <form action="/uploadversion/{{ track.trackid }}">
+                <input type="submit" value="Upload new version">
+            </form>
+            <form action="/deletetrack" method="POST">
+                <input type="hidden" name="trackid" value="{{ track.trackid }}">
+                <input type="hidden" name="userid" value="{{ track.userid }}">
+                <input type="submit" value="Delete track">
+            </form>
         {% endif %}
     {% endfor %}
     </ul>

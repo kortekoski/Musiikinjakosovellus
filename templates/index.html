@@ -3,10 +3,19 @@
 <h2>Genres</h2>
 <ul>
     {% for genre in genres %}
-        {% if info[genre.id][0] == 0%}
-            <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}})</li>
+        {% if session.admin %}
+            {% if info[genre.id][0] == 0 and info[genre.id][1] == 0 %}
+                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: 0)</li>
+            {% else %}
+                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Public tracks: {{info[genre.id][0]}}, 
+                    Private tracks: {{info[genre.id][1]}}, last uploaded {{info[genre.id][3][0].ctime()}})</li>
+            {% endif %}
         {% else %}
-            <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}}, last uploaded {{info[genre.id][1][0].ctime()}})</li>
+            {% if info[genre.id][0] == 0%}
+                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: 0)</li>
+            {% else %}
+                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}}, last uploaded {{info[genre.id][2][0].ctime()}})</li>
+            {% endif %}
         {% endif %}
     {% endfor %}
 </ul>
