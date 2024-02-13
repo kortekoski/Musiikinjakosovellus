@@ -1,11 +1,13 @@
-from app import app
-from db import db
-from flask import redirect, render_template, request, session, make_response, url_for, abort
+from flask import redirect, render_template, request, session, make_response, url_for
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
+from app import app
+from db import db
+from utils import error
 
 @app.route("/")
 def index():
+    """The index of the application. Shows the genre areas where the tracks are."""
     sql = "SELECT id, name FROM Genres"
     result = db.session.execute(text(sql))
     genres = result.fetchall()
@@ -14,7 +16,9 @@ def index():
     for genre in genres:
         genreid = genre.id
         # Get counts of the tracks in each genre (skip invisible and private tracks)
-        count = db.session.execute(text("SELECT COUNT(name) FROM Tracks WHERE genre_id=:genreid AND visible=True AND private=False"), {"genreid":genreid}).fetchone()[0]
+        count = db.session.execute(text("SELECT COUNT(name) FROM Tracks \
+            WHERE genre_id=:genreid AND visible=True AND private=False"), \
+            {"genreid":genreid}).fetchone()[0]
         # Get the last uploaded track (skip invisible and private tracks)
         last_uploaded = db.session.execute(text("SELECT date FROM Tracks WHERE genre_id=:genreid AND visible=True AND private=False ORDER BY date DESC"), {"genreid":genreid}).fetchone()
 
@@ -24,8 +28,8 @@ def index():
     return render_template("index.html", genres=genres, info=info)
 
 # This route is for the search function.
-@app.route("/result")
-def result():
+@app.route("/searchresult")
+def searchresult():
     query = request.args["query"].lower()
     sql = "SELECT Tracks.id, name, username FROM Tracks \
         LEFT JOIN Users ON Tracks.user_id=Users.id \
@@ -53,17 +57,26 @@ def profile(id):
 
 @app.route("/deletetrack", methods=["POST"])
 def deletetrack():
-    if not session["admin"]:
-        redirect("/")
 
     # The track isn't really deleted, only turned invisible.
-    trackid = request.form["trackid"]
-    genreid = request.form["genreid"]
-    sql = "UPDATE Tracks SET visible=False WHERE id=:trackid"
-    db.session.execute(text(sql), {"trackid":trackid})
-    db.session.commit()
-    genreurl = url_for('genre', id=genreid)
-    return redirect(genreurl)
+    trackid = request.form.get("trackid")
+    genreid = request.form.get("genreid")
+    userid = request.form.get("userid")
+
+    # Redirection depends on where the track was deleted from, the genre page or the profile page.
+    # TODO: Confirmation for the deletion.
+    if genreid:
+        sql = "UPDATE Tracks SET visible=False WHERE id=:trackid"
+        db.session.execute(text(sql), {"trackid":trackid})
+        db.session.commit()
+        genreurl = url_for('genre', id=genreid)
+        return redirect(genreurl)
+    elif userid:
+        sql = "UPDATE Tracks SET visible=False WHERE id=:trackid"
+        db.session.execute(text(sql), {"trackid":trackid})
+        db.session.commit()
+        profileurl = url_for('profile', id=userid)
+        return redirect(profileurl)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -87,7 +100,7 @@ def login():
             else:
                 error = 'Invalid password!'
                 return redirect(url_for('login', error='Invalid password'))
-    
+
     return render_template("login.html", error=request.args.get('error'))
 
 @app.route("/signup")
@@ -133,7 +146,7 @@ def upload():
     keywords = request.form["keywords"].lower().split()
 
     # TODO: Check if required fields are filled (name?) and that there is a file.
-   
+
     data = file.read()
     # TODO: Check file?
     sql = "INSERT INTO Tracks (name, user_id, genre_id, date, data, description, private) \
@@ -153,10 +166,10 @@ def edittrack(id):
     trackinfo = result.fetchone()
 
     if "userid" not in session:
-        abort(403, "Access forbidden: You do not have permission to access this resource.")
+        error.throw(403)
     elif session["userid"] != trackinfo.userid:
-        abort(403, "Access forbidden: You do not have permission to access this resource.")
-    
+        error.throw(403)
+
     sql2 = "SELECT id, name FROM Genres"
     result2 = db.session.execute(text(sql2))
     genres = result2.fetchall()
@@ -170,7 +183,7 @@ def sendtrackedit():
     description = request.form["description"]
     private = request.form["private"]
     trackid = request.form["trackid"]
-    
+
     sql = "UPDATE Tracks SET name=:name, genre_id=:genre_id, description=:description, private=:private WHERE id=:trackid"
     db.session.execute(text(sql), {"name":name, "genre_id":genre_id, "description":description, "private":private, "trackid":trackid})
     db.session.commit()
@@ -219,20 +232,28 @@ def removecomment(id):
     # Fetch the track_id for redirecting:
     sql = "SELECT track_id, user_id FROM Comments WHERE id=:id"
     result = db.session.execute(text(sql), {"id":id})
-    track_id = result.fetchone()[0]
+    track_info = result.fetchone()
+    track_id = track_info[0]
+    user_id = track_info[1]
 
-    if "userid" not in session:
-        abort(403, "Access forbidden: You do not have permission to access this resource.")
-    elif session["userid"] != comment.user_id:
-        abort(403, "Access forbidden: You do not have permission to access this resource.")
+    # comment can be removed if:
+    # - the userid in session matches the comment or
+    # - if session has admin rights
+    # maybe pur the 403 last?
 
-    # The comment is removed.
-    sql = "DELETE FROM Comments WHERE id=:id"
-    db.session.execute(text(sql), {"id":id})
-    db.session.commit()
+    # Check if user session exists
+    if "userid" in session:
+        # Check for correct userid or admin rights
+        if session["userid"] == user_id or session["admin"]:
+            # The comment is removed.
+            sql = "DELETE FROM Comments WHERE id=:id"
+            db.session.execute(text(sql), {"id":id})
+            db.session.commit()
+            track_url = url_for('track', id=track_id)
+            return redirect(track_url)
 
-    track_url = url_for('track', id=track_id)
-    return redirect(track_url)
+    # Throw a 403 for the rats trying to slip in >:)
+    error.throw(403)
 
 @app.route("/editcomment/<int:id>")
 def editcomment(id):
@@ -241,9 +262,9 @@ def editcomment(id):
     comment = result.fetchone()
 
     if "userid" not in session:
-        abort(403, "Access forbidden: You do not have permission to access this resource.")
+        error.throw(403)
     elif session["userid"] != comment.user_id:
-        abort(403, "Access forbidden: You do not have permission to access this resource.")
+        error.throw(403)
 
     return render_template("editcomment.html", comment=comment)
 
