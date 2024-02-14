@@ -1,14 +1,54 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+    <script>
+        // Allow only one audio file to play at a time
+        const playTrack = (i) => {
+            const audios = document.querySelectorAll('audio');
+            const currentAudio = audios[i];
+
+            audios.forEach((audio) => {
+                if (audio !== currentAudio) {
+                    audio.pause();
+                }
+            });
+
+            currentAudio.play();
+        }
+    </script>
 </head>
 <body>
 {% include "loginbox.html" %}
 
 <h2>{{ track.name }}</h2>
-<!-- TODO: fetch the different versions from the database. -->
 <!-- The different versions of the track will hopefully have their own tabs here. -->
-<audio controls src="/play/{{ track.id }}"></audio>
+{% if versions %}
+    <!-- tab test starts here -->
+    <p>
+        <div class="versiontabs">  
+            <input type="radio" class="tabs_radio" name="tabs_version" id="versiontab0" checked>
+            <label for="versiontab0" class="tabs_label">Version 0</label>
+            <div class="tabs_content">
+                <audio controls src="/play/{{ track.id }}/0" onplay="playTrack(0)"></audio>
+            </div>
+            {% for version in versions %}
+                <input type="radio" class="tabs_radio" name="tabs_version" id="versiontab{{version.version_number}}">
+                <label for="versiontab{{version.version_number}}" class="tabs_label">Version {{version.version_number}}</label>
+                <div class="tabs_content">
+                    <audio controls src="/play/{{ track.id }}/{{version.version_number}}" onplay="playTrack({{version.version_number}})"></audio>
+                    <div class="changelogs">
+                        <h3>Changelog</h3>
+                        <p>{{version.changelog}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{% else %}
+    <p>
+        <audio controls src="/play/{{ track.id }}/0"></audio>
+{% endif %}
+
 
 <h3>Description</h3>
 <p>{{ track.description }}</p>

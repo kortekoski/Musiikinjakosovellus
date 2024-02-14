@@ -237,10 +237,14 @@ def sendtrackedit():
     return redirect(track_url)
 
 # This route plays a track in the database.
-@app.route("/play/<int:id>")
-def play(id):
-    track_sql = "SELECT data FROM Tracks where id=:id"
-    result = db.session.execute(text(track_sql), {"id":id})
+@app.route("/play/<int:track_id>/<int:version_id>")
+def play(track_id, version_id):
+    if version_id == 0:
+        sql = "SELECT data FROM Tracks WHERE id=:track_id"
+    elif version_id > 0:
+        sql = "SELECT data FROM Versions \
+            WHERE track_id=:track_id AND version_number=:version_id"
+    result = db.session.execute(text(sql), {"track_id":track_id, "version_id":version_id})
     data = result.fetchone()[0]
     response = make_response(bytes(data))
     response.headers.set("Content-Type", "audio/mpeg")
@@ -253,12 +257,20 @@ def track(id):
     result = db.session.execute(text(track_sql), {"id":id})
     track = result.fetchone()
 
+    if not track.visible:
+        return error.throw(404)
+
+    # Fetch the versions
+    version_sql = "SELECT * FROM Versions WHERE track_id=:id"
+    result = db.session.execute(text(version_sql), {"id":id})
+    versions = result.fetchall()
+
     # Fetch the comments for the track:
     comment_sql = "SELECT user_id, Comments.id, content, date, username FROM Comments LEFT JOIN Users on Comments.user_id=Users.id WHERE track_id=:id"
     result = db.session.execute(text(comment_sql), {"id":id})
     comments = result.fetchall()
 
-    return render_template("track.html", track=track, comments=comments)
+    return render_template("track.html", track=track, versions=versions, comments=comments)
 
 @app.route("/comment/<int:track_id>", methods=['POST'])
 def comment(track_id):
