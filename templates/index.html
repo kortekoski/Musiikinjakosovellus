@@ -1,5 +1,13 @@
 {% include "loginbox.html" %}
 <h1>Musiikinjakosovellus</h1>
+<h2>Spotlight</h2>
+<h3>Quality tracks handpicked by our editors.</h3>
+<!-- Carousel here -->
+<ul>
+    {% for track in spotlight %}
+    <li><a href="/track/{{ track.track_id }}">{{ track.name }}</a> by {{ track.username }}</li>
+    {% endfor %}
+</ul>
 <h2>Genres</h2>
 <ul>
     {% for genre in genres %}

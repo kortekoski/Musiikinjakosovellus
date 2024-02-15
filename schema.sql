@@ -40,3 +40,7 @@ CREATE TABLE Comments (
     date TIMESTAMP, 
     track_id INTEGER REFERENCES Tracks ON DELETE CASCADE, 
     user_id INTEGER REFERENCES Users);
+
+CREATE TABLE Spotlight (
+    id SERIAL PRIMARY KEY,
+    track_id INTEGER REFERENCES Tracks ON DELETE CASCADE);

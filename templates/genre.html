@@ -12,6 +12,12 @@
                         <input type="submit" value="Delete track">
                     </form>
                 {% endif %}
+                {% if session.admin %}
+                    <form action="/addtospotlight" method="POST">
+                        <input type="hidden" name="trackid" value="{{ track.id }}">
+                        <input type="submit" value="Add to spotlight">
+                    </form>
+                {% endif %}
             {% endif %}
             {% if track.private %}
                 {% if session.admin or session.userid == track.user_id %}

@@ -7,10 +7,17 @@ from utils import error
 
 @app.route("/")
 def index():
-    """The index of the application. Shows the genre areas where the tracks are."""
-    sql = "SELECT id, name FROM Genres"
-    result = db.session.execute(text(sql))
-    genres = result.fetchall()
+    """The index of the application. Shows the genre areas where the tracks are plus editor spotlight & playlists."""
+    genresql = "SELECT id, name FROM Genres"
+    genreresult = db.session.execute(text(genresql))
+    genres = genreresult.fetchall()
+
+    spotlightsql = "SELECT Spotlight.track_id, Tracks.name, Users.username FROM Spotlight \
+        LEFT JOIN Tracks ON Spotlight.track_id=Tracks.id \
+        LEFT JOIN Users ON Users.id=Tracks.user_id \
+        WHERE Tracks.visible=True"
+    spotlightresult = db.session.execute(text(spotlightsql))
+    spotlight = spotlightresult.fetchall()
 
     info = {}
     for genre in genres:
@@ -37,7 +44,7 @@ def index():
         infotuple = (public_count, private_count, last_uploaded, last_uploaded_admin)
         info[genreid] = infotuple
 
-    return render_template("index.html", genres=genres, info=info)
+    return render_template("index.html", genres=genres, spotlight=spotlight, info=info)
 
 # This route is for the search function.
 @app.route("/searchresult")
@@ -94,6 +101,17 @@ def deletetrack():
 
     return error.throw(403)
 
+@app.route("/addtospotlight", methods=["POST"])
+def addtospotlight():
+    if session["admin"]:
+        trackid = request.form.get("trackid")
+        sql = "INSERT INTO Spotlight (track_id) VALUES (:trackid)"
+        db.session.execute(text(sql), {"trackid":trackid})
+        db.session.commit()
+        return redirect('/')
+    
+    return error.throw(403)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -123,7 +141,7 @@ def login():
 def signup():
     return render_template("signup.html")
 
-@app.route("/registeruser", methods=['POST'])
+@app.route("/registeruser", methods=["POST"])
 def registeruser():
     username = request.form["username"]
     password = request.form["password"]
@@ -148,7 +166,7 @@ def upload():
     genres = result.fetchall()
     return render_template("upload.html", genres=genres)
 
-@app.route("/send", methods=['POST'])
+@app.route("/send", methods=["POST"])
 def send():
     file = request.files["file"]
     userid = session["userid"]
@@ -181,7 +199,7 @@ def uploadversion(track_id):
     track_name = result.fetchone()[0]
     return render_template("upload_version.html", track_id=track_id, track_name=track_name)
 
-@app.route("/sendversion", methods=['POST'])
+@app.route("/sendversion", methods=["POST"])
 def sendversion():
     """Uploads a new version of an existing track to showcase alongside previous versions."""
     file = request.files["file"]
@@ -221,7 +239,7 @@ def edittrack(id):
 
     return render_template("edittrack.html", trackinfo=trackinfo, genres=genres)
 
-@app.route("/sendtrackedit", methods=['POST'])
+@app.route("/sendtrackedit", methods=["POST"])
 def sendtrackedit():
     name = request.form["trackname"]
     genre_id = request.form["genre"]
@@ -272,7 +290,7 @@ def track(id):
 
     return render_template("track.html", track=track, versions=versions, comments=comments)
 
-@app.route("/comment/<int:track_id>", methods=['POST'])
+@app.route("/comment/<int:track_id>", methods=["POST"])
 def comment(track_id):
     comment_text = request.form["newcomment"]
     userid = session["userid"]
@@ -325,7 +343,7 @@ def editcomment(id):
 
     return render_template("editcomment.html", comment=comment)
 
-@app.route("/sendedit", methods=['POST'])
+@app.route("/sendedit", methods=["POST"])
 def sendedit():
     comment_id = request.form["comment_id"]
     newcontent = request.form["editedcomment"]
