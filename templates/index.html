@@ -1,7 +1,7 @@
 {% include "loginbox.html" %}
 <h1>Musiikinjakosovellus</h1>
 <h2>Spotlight</h2>
-<h3>Quality tracks handpicked by our editors.</h3>
+<h3>Brand new quality tracks handpicked by our editors.</h3>
 <!-- Carousel here -->
 <ul>
     {% for track in spotlight %}
@@ -25,5 +25,12 @@
                 <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}}, last uploaded {{info[genre.id][2][0].ctime()}})</li>
             {% endif %}
         {% endif %}
+    {% endfor %}
+</ul>
+<h2>Playlists</h2>
+<h3>Different tracks for different moods.</h3>
+<ul>
+    {% for playlist in playlists %}
+        <a href="playlist/{{ playlist.id }}">{{ playlist.name }}</a>
     {% endfor %}
 </ul>

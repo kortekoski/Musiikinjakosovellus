@@ -1,0 +1,9 @@
+{% include "loginbox.html" %}
+<h1>Playlist: {{tracks[0].playlistname}}</h1>
+<ul>
+    {% for track in tracks %}
+        <li>
+            <a href="/track/{{ track.track_id }}">{{track.trackname}}</a> by {{track.username}}
+        </li>
+    {% endfor %}
+</ul>

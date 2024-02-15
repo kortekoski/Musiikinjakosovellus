@@ -5,6 +5,7 @@ from app import app
 from db import db
 from utils import error
 import queries
+from datetime import datetime
 
 @app.route("/")
 def index():
@@ -44,8 +45,10 @@ def index():
 
         infotuple = (public_count, private_count, last_uploaded, last_uploaded_admin)
         info[genreid] = infotuple
+    
+    playlists = queries.get_playlists()
 
-    return render_template("index.html", genres=genres, spotlight=spotlight, info=info)
+    return render_template("index.html", genres=genres, spotlight=spotlight, info=info, playlists=playlists)
 
 # This route is for the search function.
 @app.route("/searchresult")
@@ -285,7 +288,7 @@ def track(id):
     versions = result.fetchall()
 
     # Fetch the comments for the track:
-    comment_sql = "SELECT user_id, Comments.id, content, date, username FROM Comments LEFT JOIN Users on Comments.user_id=Users.id WHERE track_id=:id"
+    comment_sql = "SELECT user_id, Comments.id, content, date, username FROM Comments LEFT JOIN Users on Comments.user_id=Users.id WHERE track_id=:id ORDER BY date DESC"
     result = db.session.execute(text(comment_sql), {"id":id})
     comments = result.fetchall()
 
@@ -348,6 +351,8 @@ def editcomment(id):
 def sendedit():
     comment_id = request.form["comment_id"]
     newcontent = request.form["editedcomment"]
+    edittime = datetime.now().ctime()
+    newcontent += "\nEdited on" + edittime
     trackid = request.form["track_id"]
     sql = "UPDATE Comments SET content=:content WHERE id=:id"
     db.session.execute(text(sql), {"content":newcontent, "id":comment_id})
