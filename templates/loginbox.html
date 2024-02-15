@@ -11,6 +11,10 @@
     <p>Not logged in</p>
     <a href="/login">Log in or sign up</a>
 {% endif %}
+{% if session.admin %}
+    <p>
+    <a href="/adminpanel">Admin panel</a>
+{% endif %}
 <p><a href="/">Return to index</a></p>
 <form action="/searchresult" method="GET">
     Search: <input type="text" name="query">

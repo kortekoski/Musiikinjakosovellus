@@ -1,0 +1,13 @@
+{% include "loginbox.html" %}
+
+<h1>Create playlist</h1>
+<ul>
+    <form action="/registerplaylist" method="POST">
+        {% for track in tracks %}
+            <input type="checkbox" name="checked" value="{{track.id}}">
+            <label for="{{track.id}}">{{track.name}}</label><br>
+        {% endfor %}
+        <p>
+        <input type="submit" value="Create">
+    </form>
+</ul>
