@@ -15,7 +15,7 @@
     <p> Description<br>
         <textarea id="description" name="description" rows="5" cols="40">{{ trackinfo.description }}</textarea>
     <p> Keywords (separate with a space)<br>
-        <textarea id="keywords" name="keywords" rows="3" cols="40" placeholder="e.g. trash nottrash"></textarea>
+        <textarea id="keywords" name="keywords" rows="3" cols="40" placeholder="e.g. trash nottrash">{{ keywordstring }}</textarea>
     <p> Set as private?
         <select id="private" name="private">
             {% if trackinfo.private %}
