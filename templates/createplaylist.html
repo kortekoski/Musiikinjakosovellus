@@ -8,7 +8,11 @@
             <label for="{{track.id}}">{{track.name}}</label><br>
         {% endfor %}
         <p>
+        Playlist name:
         <input type="text" name="playlistname">
+        <p>
+        Description:<br>
+        <textarea id="description" name="description" rows="5" cols="40"></textarea>
         <p>
         <input type="submit" value="Create">
     </form>

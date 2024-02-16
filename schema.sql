@@ -47,7 +47,8 @@ CREATE TABLE Spotlight (
 
 CREATE TABLE Playlists (
     id SERIAL PRIMARY KEY,
-    name TEXT);
+    name TEXT,
+    description TEXT);
 
 CREATE TABLE PlaylistsTracks (
     playlist_id INTEGER REFERENCES Playlists ON DELETE CASCADE,

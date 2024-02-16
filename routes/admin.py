@@ -12,18 +12,3 @@ def adminpanel():
         return render_template("adminpanel.html")
 
     return error.throw(403)
-
-@app.route("/createplaylist")
-def createplaylist():
-    if session["admin"]:
-        tracks = queries.get_tracks()
-        return render_template("createplaylist.html", tracks=tracks)
-
-    return error.throw(403)
-
-@app.route("/registerplaylist", methods=["POST"])
-def registerplaylist():
-    if queries.create_playlist(request):
-        return redirect("/adminpanel")
-
-    return error.throw(400)

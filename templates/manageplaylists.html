@@ -1,0 +1,20 @@
+{% include "loginbox.html" %}
+<h1>Playlists in database</h1>
+{% if playlists %}
+<ul>
+    {% for playlist in playlists %}
+        <li>
+            <a href="/playlist/{{ playlist.id }}">{{ playlist.name }}</a><br>
+            <form action="/editplaylist/{{ playlist.id }}">
+                <input type="submit" value="Edit playlist">
+            </form>
+            <form action="/deleteplaylist" method="POST">
+                <input type="hidden" name="playlistid" value="{{ playlist.id }}">
+                <input type="submit" value="Delete playlist">
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+    <h3>No playlists found!</h3>
+{% endif %}

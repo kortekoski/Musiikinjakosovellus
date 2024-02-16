@@ -1,0 +1,24 @@
+{% include "loginbox.html" %}
+
+<form action="/sendplaylistedit" method="POST">
+    {% for track in alltracks %}
+        {% if track.id in playlisttrackids %}
+            <input type="checkbox" name="checked" value="{{track.id}}" checked>
+            <label for="{{track.id}}">{{track.name}}</label><br>
+        {% else %}
+            <input type="checkbox" name="checked" value="{{track.id}}">
+            <label for="{{track.id}}">{{track.name}}</label><br>
+        {% endif %}
+    {% endfor %}
+    <p>
+    Playlist name:
+    <input type="text" name="playlistname" value="{{ playlist.name }}">
+    <p>
+    Description:<br>
+    <textarea id="description" name="description" rows="5" cols="40">{{ playlist.description }}</textarea>
+    <p>
+    <input type="hidden" name="playlistid" value="{{ playlist.id }}">
+    <input type="hidden" name="originalname" value="{{ playlist.name }}">
+    <input type="hidden" name="originaldesc" value="{{ playlist.description }}">
+    <input type="submit" value="Send edit">
+</form>
