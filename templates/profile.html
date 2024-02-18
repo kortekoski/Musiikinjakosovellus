@@ -8,7 +8,7 @@
     {% for track in tracks%}
         {% if track.private %}
             {% if session.userid == tracks[0].userid or session.admin %}
-                <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a> &#128274</li>
+                <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a> &#128274  </li>
             {% endif %}
         {% else %}
             <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>

@@ -17,9 +17,17 @@ def adminpanel():
 def addtospotlight():
     if session["admin"]:
         trackid = request.form.get("trackid")
-        sql = "INSERT INTO Spotlight (track_id) VALUES (:trackid)"
-        db.session.execute(text(sql), {"trackid":trackid})
-        db.session.commit()
+        queries.add_to_spotlight(trackid)
         return redirect('/')
     
+    return error.throw(403)
+
+@app.route("/removespotlight", methods=["POST"])
+def removespotlight():
+    if session["admin"]:
+        trackid = request.form.get("strackid")
+        print(trackid)
+        queries.remove_from_spotlight(trackid)
+        return redirect('/')
+
     return error.throw(403)

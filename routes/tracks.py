@@ -42,7 +42,7 @@ def send():
     sharecode = generate_share.generate_sharecode()
 
     # TODO: Check if required fields are filled (name?) and that there is a file.
-
+    
     data = file.read()
     # TODO: Check file?
     sql = "INSERT INTO Tracks (name, user_id, genre_id, date, data, description, private, sharecode) \

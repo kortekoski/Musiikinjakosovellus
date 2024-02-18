@@ -5,7 +5,14 @@
 <!-- Carousel here -->
 <ul>
     {% for track in spotlight %}
-    <li><a href="/track/{{ track.track_id }}">{{ track.name }}</a> by {{ track.username }}</li>
+    <li><a href="/track/{{ track.track_id }}">{{ track.name }}</a> by {{ track.username }} 
+        {% if session.admin %}
+            <form action="/removespotlight" method="POST">
+                <input type="hidden" name="strackid" value="{{ track.track_id }}">
+                <input type="submit" value="Remove">
+            </form>
+        {% endif %}
+    </li>
     {% endfor %}
 </ul>
 <h2>Genres</h2>
