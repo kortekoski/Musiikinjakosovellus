@@ -53,12 +53,15 @@
     <p>
         <audio controls src="/play/{{ track.id }}/0"></audio>
 {% endif %}
-
-<p>
-    <!-- Not the best way, but it works for now. -->
-    <button onclick=showShare()>Share</button>
-</p>
-<p>&#128274 <i>This track is private.</i></p>
+{% if track.user_id == session.userid %}
+    <p>
+        <!-- Not the best way, but it works for now. -->
+        <button onclick=showShare()>Share</button>
+    </p>
+{% endif %}
+{% if track.private %}
+    <p>&#128274 <i>This track is private.</i></p>
+{% endif %}
 
 <h3>Description</h3>
 <p>{{ track.description }}</p>
