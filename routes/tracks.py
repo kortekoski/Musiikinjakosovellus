@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
 from db import db
-from utils import error
+from utils import error, generate_share
 import queries
 
 @app.route("/deletetrack", methods=["POST"])
@@ -39,22 +39,22 @@ def send():
     description = request.form["description"]
     genreid = request.form["genre"]
     private = request.form["private"]
+    sharecode = generate_share.generate_sharecode()
 
     # TODO: Check if required fields are filled (name?) and that there is a file.
 
     data = file.read()
     # TODO: Check file?
-    sql = "INSERT INTO Tracks (name, user_id, genre_id, date, data, description, private) \
-        VALUES (:name, :userid, :genreid, NOW(), :data, :description, :private)"
-    db.session.execute(text(sql), {"name":name, "userid":userid, "genreid":genreid, "data":data, "description":description, "private":private})
+    sql = "INSERT INTO Tracks (name, user_id, genre_id, date, data, description, private, sharecode) \
+        VALUES (:name, :userid, :genreid, NOW(), :data, :description, :private, :sharecode)"
+    db.session.execute(text(sql), {"name":name, "userid":userid, "genreid":genreid, "data":data, "description":description, "private":private, "sharecode":sharecode})
     db.session.commit()
 
     keywords = request.form["keywords"].lower().split()
     queries.add_keywords(keywords)
 
-    # TODO: Return "upload successful" or whatever and redirect to the created track page. Could also redirect to the "my tracks" page, which doesn't exist yet.
-    genre_url = url_for('genre', id=genreid)
-    return redirect(genre_url)
+    track_url = url_for("track", id=queries.max_trackid())
+    return "Upload successful, redirecting to track page...", {"Refresh": "3; url="+track_url}
 
 @app.route("/uploadversion/<int:track_id>")
 def uploadversion(track_id):
@@ -151,6 +151,32 @@ def track(id):
 
     if not track.visible:
         return error.throw(404)
+    
+    if track.private:
+        sharelink = "Share your track: " + request.url + "?share=" + track.sharecode
+    else:
+        sharelink = "Share your track: " + request.url
+    
+    # TODO: Make this code more compact.
+    if "userid" in session:
+        if track.private and session["userid"] != track.user_id:
+            sharecode_in_url = request.args.get("share")
+
+            if not sharecode_in_url or not track.sharecode:
+                return error.throw(403)
+            
+            if track.sharecode != sharecode_in_url:
+                return error.throw(403)
+    else:
+        if track.private:
+            sharecode_in_url = request.args.get("share")
+
+            if not sharecode_in_url or not track.sharecode:
+                return error.throw(403)
+            
+            if track.sharecode != sharecode_in_url:
+                return error.throw(403)
+
 
     # Fetch the versions
     version_sql = "SELECT * FROM Versions WHERE track_id=:id"
@@ -162,4 +188,4 @@ def track(id):
     result = db.session.execute(text(comment_sql), {"id":id})
     comments = result.fetchall()
 
-    return render_template("track.html", track=track, versions=versions, comments=comments)
+    return render_template("track.html", track=track, versions=versions, comments=comments, sharelink=sharelink)

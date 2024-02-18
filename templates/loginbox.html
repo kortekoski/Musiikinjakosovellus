@@ -9,7 +9,7 @@
     </p>
 {% else %}
     <p>Not logged in</p>
-    <a href="/login">Log in or sign up</a>
+    <a href="/login?previous_url={{session.current_url}}">Log in or sign up</a>
 {% endif %}
 {% if session.admin %}
     <p>

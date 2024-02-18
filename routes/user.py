@@ -6,6 +6,11 @@ from db import db
 from utils import error
 import queries
 
+@app.before_request
+def update_session_current_url():
+    """This essentially exists so that redirection to the previous page works after login."""
+    session["current_url"] = request.url
+
 @app.route("/profile/<int:id>")
 def profile(id):
     sql = "SELECT Users.id AS userid, Users.username, Tracks.id AS trackid, \
@@ -35,12 +40,13 @@ def login():
                 session["username"] = username
                 session["userid"] = user.id
                 session["admin"] = user.admin
-                return redirect('/')
+
+                return redirect(request.form["redirect_url"])
             else:
                 error = 'Invalid password!'
                 return redirect(url_for('login', error='Invalid password'))
 
-    return render_template("login.html", error=request.args.get('error'))
+    return render_template("login.html", error=request.args.get('error'), previous_url = request.args.get('previous_url'))
 
 @app.route("/signup")
 def signup():
@@ -55,7 +61,7 @@ def registeruser():
     sql = "INSERT INTO Users (username, password, admin) VALUES (:username, :password, :admin)"
     db.session.execute(text(sql), {"username":username, "password":hash_value, "admin":admin})
     db.session.commit()
-    return "User added to database"
+    return "Signup successful, redirecting to index in 3 seconds...", {"Refresh": "3; url=/"}
 
 @app.route("/logout")
 def logout():

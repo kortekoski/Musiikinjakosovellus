@@ -27,6 +27,9 @@ def get_tracks():
 
     return tracks
 
+def max_trackid():
+    return db.session.execute(text("SELECT MAX(id) FROM Tracks")).fetchone()[0]
+
 def delete_track(id):
     sql = "UPDATE Tracks SET visible=False WHERE id=:id"
     db.session.execute(text(sql), {"id":id})

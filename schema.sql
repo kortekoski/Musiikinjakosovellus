@@ -17,7 +17,8 @@ CREATE TABLE Tracks (
     data BYTEA,
     description TEXT,
     visible BOOLEAN DEFAULT TRUE,
-    private BOOLEAN);
+    private BOOLEAN,
+    sharecode TEXT);
 
 CREATE TABLE Versions (
     id SERIAL PRIMARY KEY, 
