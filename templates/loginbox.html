@@ -1,23 +1,31 @@
-{% if session.username %}
-    <p>Logged in as <b>{{ session.username }}</b></p>
-    <p><a href="/profile/{{session.userid}}">My profile</a></p>
-    <p>
-        <a href="/logout">Log out</a>
-    </p>
-    <p>
-        <a href="/upload">Upload track</a>
-    </p>
-{% else %}
-    <p>Not logged in</p>
-    <a href="/login?previous_url={{session.current_url}}">Log in or sign up</a>
-{% endif %}
-{% if session.admin %}
-    <p>
-    <a href="/adminpanel">Admin panel</a>
-{% endif %}
-<p><a href="/">Return to index</a></p>
-<form action="/searchresult" method="GET">
-    Search: <input type="text" name="query">
-    <br>
-    <input type="submit" value="Send">
-</form>
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+</head>
+<div class="navbar">
+    <ul>
+        {% if session.username %}
+            <li>Logged in as <b>{{ session.username }}</b></li>
+            <li><a href="/profile/{{session.userid}}">My profile</a></li>
+            
+                <li><a href="/logout">Log out</a></li>
+            
+            
+                <li><a href="/upload">Upload track</a></li>
+            
+        {% else %}
+            <li>Not logged in</li>
+            <li><a href="/login?previous_url={{session.current_url}}">Log in or sign up</a></li>
+        {% endif %}
+        {% if session.admin %}
+            
+            <li><a href="/adminpanel">Admin panel</a></li>
+        {% endif %}
+        <li><a href="/">Return to index</a></li>
+        <li id="searchbar"><form action="/searchresult" method="GET">
+            Search: <input type="text" name="query">
+            <input type="submit" value="Send">
+        </form></li>
+    </ul>
+</div>
