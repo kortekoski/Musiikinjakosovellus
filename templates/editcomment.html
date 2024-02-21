@@ -3,5 +3,6 @@
     <textarea id="editedcomment" name="editedcomment" rows="5" cols="40" autofocus>{{ comment.content }}</textarea>
     <input type="hidden" name="track_id" value="{{comment.track_id}}">
     <input type="hidden" name="comment_id" value="{{comment.id}}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <p><input type="submit" value="Send"></p>
 </form>

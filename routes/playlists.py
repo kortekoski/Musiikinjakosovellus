@@ -2,6 +2,7 @@ from flask import redirect, render_template, request, session, url_for
 from app import app
 from utils import error
 from queries import playlist_queries, track_queries
+from utils.check_session import check_csrf
 
 @app.route("/createplaylist")
 def createplaylist():
@@ -13,6 +14,8 @@ def createplaylist():
 
 @app.route("/registerplaylist", methods=["POST"])
 def registerplaylist():
+    check_csrf(request)
+
     if playlist_queries.create_playlist(request):
         return redirect("/adminpanel")
 
@@ -34,6 +37,8 @@ def manageplaylists():
 
 @app.route("/deleteplaylist", methods=["POST"])
 def deleteplaylist():
+    check_csrf(request)
+
     if playlist_queries.delete_playlist(request):
         return redirect(url_for("manageplaylists"))
     
@@ -52,6 +57,8 @@ def editplaylist(id):
 
 @app.route("/sendplaylistedit", methods=["POST"])
 def sendplaylistedit():
+    check_csrf(request)
+    
     if playlist_queries.edit_playlist(request):
         return redirect(url_for("manageplaylists"))
 

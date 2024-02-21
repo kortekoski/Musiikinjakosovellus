@@ -20,5 +20,6 @@
     <input type="hidden" name="playlistid" value="{{ playlist.id }}">
     <input type="hidden" name="originalname" value="{{ playlist.name }}">
     <input type="hidden" name="originaldesc" value="{{ playlist.description }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Send edit">
 </form>

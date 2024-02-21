@@ -2,6 +2,7 @@ from flask import redirect, render_template, request, session
 from app import app
 from utils import error
 from queries import admin_queries
+from utils.check_session import check_csrf
 
 @app.route("/adminpanel")
 def adminpanel():
@@ -12,6 +13,8 @@ def adminpanel():
 
 @app.route("/addtospotlight", methods=["POST"])
 def addtospotlight():
+    check_csrf(request)
+
     if session["admin"]:
         trackid = request.form.get("trackid")
         admin_queries.add_to_spotlight(trackid)
@@ -21,6 +24,8 @@ def addtospotlight():
 
 @app.route("/removespotlight", methods=["POST"])
 def removespotlight():
+    check_csrf(request)
+
     if session["admin"]:
         trackid = request.form.get("strackid")
         print(trackid)

@@ -2,10 +2,11 @@ from flask import redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
 from queries import user_queries
+import secrets
 
 @app.before_request
 def update_session_current_url():
-    """This essentially exists so that redirection to the previous page works after login."""
+    """This exists so that redirection to the previous page works after login."""
     session["current_url"] = request.url
 
 @app.route("/profile/<int:id>")
@@ -27,14 +28,13 @@ def login():
         else:
             hash_value = user.password
             if check_password_hash(hash_value, password):
-                # TO CONSIDER: Is this enough feedback for the user?
                 session["username"] = username
                 session["userid"] = user.id
                 session["admin"] = user.admin
+                session["csrf_token"] = secrets.token_hex(16)
 
                 return redirect(request.form["redirect_url"])
             else:
-                error = 'Invalid password!'
                 return redirect(url_for('login', error='Invalid password'))
 
     return render_template("login.html", error=request.args.get('error'), previous_url = request.args.get('previous_url'))
@@ -56,5 +56,6 @@ def registeruser():
 def logout():
     del session["username"]
     del session["userid"]
+    del session["csrf_token"]
     session["admin"] = False
     return redirect("/")

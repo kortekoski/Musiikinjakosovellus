@@ -1,10 +1,8 @@
 from flask import redirect, render_template, request, session, url_for
-from sqlalchemy.sql import text
 from app import app
-from db import db
 from utils import error
+from utils.check_session import check_csrf
 from queries import comment_queries
-from datetime import datetime
 
 @app.route("/comment/<int:track_id>", methods=["POST"])
 def comment(track_id):
@@ -17,6 +15,8 @@ def comment(track_id):
 
 @app.route("/removecomment/<int:id>")
 def removecomment(id):
+    check_csrf(request)
+
     # Fetch the track_id for redirecting:
     comment = comment_queries.get_comment(id)
     track_id = comment[3]
@@ -52,6 +52,8 @@ def editcomment(id):
 
 @app.route("/sendedit", methods=["POST"])
 def sendedit():
+    check_csrf(request)
+
     comment_id = request.form["comment_id"]
     new_content = request.form["editedcomment"]
     comment_queries.edit_comment(new_content, comment_id)

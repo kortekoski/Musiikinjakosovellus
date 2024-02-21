@@ -10,6 +10,7 @@
             </form>
             <form action="/deleteplaylist" method="POST">
                 <input type="hidden" name="playlistid" value="{{ playlist.id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 <input type="submit" value="Delete playlist">
             </form>
         </li>

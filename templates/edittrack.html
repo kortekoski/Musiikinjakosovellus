@@ -28,5 +28,6 @@
         </select>
     <p>
         <input type="hidden" id="trackid" name="trackid" value="{{trackinfo.trackid}}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Send">
 </form>

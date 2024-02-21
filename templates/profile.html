@@ -22,6 +22,7 @@
                 <input type="submit" value="Upload new version">
             </form>
             <form action="/deletetrack" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 <input type="hidden" name="trackid" value="{{ track.trackid }}">
                 <input type="hidden" name="userid" value="{{ track.userid }}">
                 <input type="submit" value="Delete track">

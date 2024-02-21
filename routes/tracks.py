@@ -2,10 +2,12 @@ from flask import redirect, render_template, request, session, make_response, ur
 from app import app
 from utils import error, generate_share
 from queries import track_queries, genre_queries
+from utils.check_session import check_csrf
 
 @app.route("/deletetrack", methods=["POST"])
 def deletetrack():
     """This route is for deleting tracks. Deleting a track turns it invisible."""
+    check_csrf(request)
     trackid = request.form.get("trackid")
     genreid = request.form.get("genreid")
     userid = request.form.get("userid")
@@ -30,6 +32,8 @@ def upload():
 
 @app.route("/send", methods=["POST"])
 def send():
+    check_csrf(request)
+
     file = request.files["file"]
     userid = session["userid"]
     name = request.form["trackname"]
@@ -52,6 +56,7 @@ def send():
 
 @app.route("/uploadversion/<int:track_id>")
 def uploadversion(track_id):
+
     track = track_queries.get_track(track_id)
     track_name = track[1]
     return render_template("upload_version.html", track_id=track_id, track_name=track_name)
@@ -59,6 +64,8 @@ def uploadversion(track_id):
 @app.route("/sendversion", methods=["POST"])
 def sendversion():
     """Uploads a new version of an existing track to showcase alongside previous versions."""
+    check_csrf(request)
+
     file = request.files["file"]
     track_id = request.form["track_id"]
     changelog = request.form["changelog"]
@@ -93,6 +100,8 @@ def edittrack(id):
 
 @app.route("/sendtrackedit", methods=["POST"])
 def sendtrackedit():
+    check_csrf(request)
+
     name = request.form["trackname"]
     genre_id = request.form["genre"]
     description = request.form["description"]

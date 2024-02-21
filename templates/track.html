@@ -78,10 +78,12 @@
             <input type="submit" value="Edit">
         </form>
         <form action="/removecomment/{{ comment.id }}" method="DELETE">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Delete">
         </form>
     {% elif session.admin == True %}
         <form action="/removecomment/{{ comment.id }}" method="DELETE">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Delete">
         </form>
     {% endif %}
@@ -93,6 +95,7 @@
 {% if session.username %}
 <form action="/comment/{{ track.id }}" method="POST">
     <textarea id="newcomment" name="newcomment" rows="5" cols="40"></textarea><br>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Send">
 </form>
 {% else %}

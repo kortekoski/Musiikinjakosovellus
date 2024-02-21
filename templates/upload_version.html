@@ -6,5 +6,6 @@
         <textarea id="changelog" name="changelog" rows="5" cols="40" placeholder="e.g. added a massive saw lead at 1:30"></textarea>
     <p>
         <input type="hidden" name="track_id" value="{{track_id}}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Send">
 </form>

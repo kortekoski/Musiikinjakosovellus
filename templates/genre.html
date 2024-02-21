@@ -9,12 +9,14 @@
                     <form action="/deletetrack" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
                         <input type="hidden" name="genreid" value="{{ track.genre_id}}">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                         <input type="submit" value="Delete track">
                     </form>
                 {% endif %}
                 {% if session.admin %}
                     <form action="/addtospotlight" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                         <input type="submit" value="Add to spotlight">
                     </form>
                 {% endif %}
@@ -25,6 +27,7 @@
                     <form action="/deletetrack" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
                         <input type="hidden" name="genreid" value="{{ track.genre_id}}">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                         <input type="submit" value="Delete track">
                     </form>
                 {% endif %}

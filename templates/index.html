@@ -9,6 +9,7 @@
         {% if session.admin %}
             <form action="/removespotlight" method="POST">
                 <input type="hidden" name="strackid" value="{{ track.track_id }}">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 <input type="submit" value="Remove">
             </form>
         {% endif %}
