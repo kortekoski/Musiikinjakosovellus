@@ -1,10 +1,7 @@
-from flask import redirect, render_template, request, session, make_response, url_for
-from sqlalchemy.sql import text
+from flask import redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
-from db import db
-from utils import error
-import queries
+from queries import user_queries
 
 @app.before_request
 def update_session_current_url():
@@ -13,12 +10,7 @@ def update_session_current_url():
 
 @app.route("/profile/<int:id>")
 def profile(id):
-    sql = "SELECT Users.id AS userid, Users.username, Tracks.id AS trackid, \
-        Tracks.name, Tracks.private \
-        FROM Users LEFT JOIN Tracks ON Users.id=Tracks.user_id \
-        WHERE Users.id=:id AND Tracks.visible=True"
-    result = db.session.execute(text(sql), {"id":id})
-    tracks = result.fetchall()
+    tracks = user_queries.get_usertracks(id)
     return render_template("profile.html", id=id, tracks=tracks)
 
 
@@ -27,9 +19,8 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        sql = "SELECT id, password, admin FROM Users WHERE username=:username"
-        result = db.session.execute(text(sql), {"username":username})
-        user = result.fetchone()
+
+        user = user_queries.get_user(username)
 
         if not user:
             return redirect(url_for('login', error='Invalid username'))
@@ -58,9 +49,7 @@ def registeruser():
     password = request.form["password"]
     admin = request.form["admin"]
     hash_value = generate_password_hash(password)
-    sql = "INSERT INTO Users (username, password, admin) VALUES (:username, :password, :admin)"
-    db.session.execute(text(sql), {"username":username, "password":hash_value, "admin":admin})
-    db.session.commit()
+    user_queries.create_user(username, hash_value, admin)
     return "Signup successful, redirecting to index in 3 seconds...", {"Refresh": "3; url=/"}
 
 @app.route("/logout")

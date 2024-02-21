@@ -1,32 +1,26 @@
-from flask import redirect, render_template, request, session, make_response, url_for
+from flask import redirect, render_template, request, session, url_for
 from sqlalchemy.sql import text
-from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
 from db import db
 from utils import error
-import queries
+from queries import comment_queries
 from datetime import datetime
 
 @app.route("/comment/<int:track_id>", methods=["POST"])
 def comment(track_id):
     comment_text = request.form["newcomment"]
-    userid = session["userid"]
-    sql = "INSERT INTO Comments (content, date, track_id, user_id) \
-        VALUES (:content, NOW(), :id, :userid)"
-    db.session.execute(text(sql), {"content":comment_text, "id":track_id, "userid":userid})
-    db.session.commit()
-    track_url = url_for('track', id=track_id)
+    user_id = session["userid"]
+    comment_queries.add_comment(comment_text, track_id, user_id)
 
+    track_url = url_for('track', id=track_id)
     return redirect(track_url)
 
 @app.route("/removecomment/<int:id>")
 def removecomment(id):
     # Fetch the track_id for redirecting:
-    sql = "SELECT track_id, user_id FROM Comments WHERE id=:id"
-    result = db.session.execute(text(sql), {"id":id})
-    track_info = result.fetchone()
-    track_id = track_info[0]
-    user_id = track_info[1]
+    comment = comment_queries.get_comment(id)
+    track_id = comment[3]
+    user_id = comment[4]
 
     # comment can be removed if:
     # - the userid in session matches the comment or
@@ -38,9 +32,7 @@ def removecomment(id):
         # Check for correct userid or admin rights
         if session["userid"] == user_id or session["admin"]:
             # The comment is removed.
-            sql = "DELETE FROM Comments WHERE id=:id"
-            db.session.execute(text(sql), {"id":id})
-            db.session.commit()
+            comment_queries.remove_comment(id)
             track_url = url_for('track', id=track_id)
             return redirect(track_url)
 
@@ -49,9 +41,7 @@ def removecomment(id):
 
 @app.route("/editcomment/<int:id>")
 def editcomment(id):
-    sql = "SELECT id, content, track_id, user_id FROM Comments WHERE id=:id"
-    result = db.session.execute(text(sql), {"id":id})
-    comment = result.fetchone()
+    comment = comment_queries.get_comment(id)
 
     if "userid" not in session:
         error.throw(403)
@@ -63,13 +53,9 @@ def editcomment(id):
 @app.route("/sendedit", methods=["POST"])
 def sendedit():
     comment_id = request.form["comment_id"]
-    newcontent = request.form["editedcomment"]
-    edittime = datetime.now().ctime()
-    newcontent += "\nEdited on" + edittime
-    trackid = request.form["track_id"]
-    sql = "UPDATE Comments SET content=:content WHERE id=:id"
-    db.session.execute(text(sql), {"content":newcontent, "id":comment_id})
-    db.session.commit()
+    new_content = request.form["editedcomment"]
+    comment_queries.edit_comment(new_content, comment_id)
 
+    trackid = request.form["track_id"]
     track_url = url_for('track', id=trackid)
     return redirect(track_url)
