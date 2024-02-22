@@ -22,3 +22,13 @@ def create_user(username, hash_value, admin):
     sql = "INSERT INTO Users (username, password, admin) VALUES (:username, :password, :admin)"
     db.session.execute(text(sql), {"username":username, "password":hash_value, "admin":admin})
     db.session.commit()
+
+def user_in_db(username):
+    sql = "SELECT * FROM Users WHERE username=:username"
+    result = db.session.execute(text(sql), {"username":username})
+    user = result.fetchone()
+
+    if user:
+        return True
+    else:
+        return False

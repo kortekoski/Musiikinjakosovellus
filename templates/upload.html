@@ -1,7 +1,19 @@
 {% include "loginbox.html" %}
-<form action="/send" method="POST" enctype="multipart/form-data">
-    File: <input type="file" name="file">
-    <p> Name <br>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+</head>
+<h1>Upload track</h1>
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/upload");
+    </script>
+{% endif %}
+<form action="/upload" method="POST" enctype="multipart/form-data">
+    File (.mp3, max file size 10 MB)* <br>
+        <input type="file" name="file">
+    <p> Name* <br>
         <input type="text" id="trackname" name="trackname">
     <p> Genre <br>
         <select id="genre" name="genre">
@@ -18,6 +30,7 @@
             <option value="false">No</option>
             <option value="true">Yes</option>
         </select>
+    <p class="required_fields">Fields marked with an * are required.</p>
     <p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Send">

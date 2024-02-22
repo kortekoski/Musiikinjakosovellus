@@ -44,7 +44,11 @@
                     <audio controls src="/play/{{ track.id }}/{{version.version_number}}" onplay="playTrack({{version.version_number}})"></audio>
                     <div class="changelogs">
                         <h3>Changelog</h3>
-                        <p>{{version.changelog}}</p>
+                        {% if version.changelog %}
+                            <p>{{version.changelog}}</p>
+                        {% else %}
+                            <p>-</p>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -64,7 +68,11 @@
 {% endif %}
 
 <h3>Description</h3>
-<p>{{ track.description }}</p>
+{% if track.description %}
+    <p>{{ track.description }}</p>
+{% else %}
+    <p>-</p>
+{% endif %}
 
 <h3>Comments</h3>
 <!-- If there are comments for the track, they are listed here. -->

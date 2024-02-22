@@ -1,9 +1,21 @@
 {% include "loginbox.html" %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+</head>
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/uploadversion/28");
+    </script>
+{% endif %}
 <h2>Upload a new version of "{{track_name}}"</h2>
-<form action="/sendversion" method="POST" enctype="multipart/form-data">
-    File: <input type="file" name="file">
+<form action="/uploadversion/{{track_id}}" method="POST" enctype="multipart/form-data">
+    File (.mp3, max file size 10 MB)* <br>
+        <input type="file" name="file">
     <p> Changelog<br>
         <textarea id="changelog" name="changelog" rows="5" cols="40" placeholder="e.g. added a massive saw lead at 1:30"></textarea>
+    <p class="required_fields">Fields marked with an * are required.</p>
     <p>
         <input type="hidden" name="track_id" value="{{track_id}}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

@@ -1,4 +1,15 @@
-<form action="/registeruser" method="POST">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+</head>
+<h1>Sign up</h1>
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/signup");
+    </script>
+{% endif %}
+<form action="/signup" method="POST">
     <div>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username">

@@ -25,58 +25,74 @@ def deletetrack():
 
     return error.throw(403)
 
-@app.route("/upload")
+@app.route("/upload", methods=["GET", "POST"])
 def upload():
     genres = genre_queries.get_genres()
-    return render_template("upload.html", genres=genres)
 
-@app.route("/send", methods=["POST"])
-def send():
-    check_csrf(request)
+    if request.method == "POST":
+        check_csrf(request)
 
-    file = request.files["file"]
-    userid = session["userid"]
-    name = request.form["trackname"]
-    description = request.form["description"]
-    genreid = request.form["genre"]
-    private = request.form["private"]
-    sharecode = generate_share.generate_sharecode()
+        file = request.files["file"]
+        userid = session["userid"]
+        name = request.form["trackname"]
+        description = request.form["description"]
+        genreid = request.form["genre"]
+        private = request.form["private"]
+        sharecode = generate_share.generate_sharecode()
 
-    # TODO: Check if required fields are filled (name?) and that there is a file.
-    # TODO: Check file?
-    data = file.read()
+        if not file:
+            return redirect(url_for('upload', error='Missing file!'))
+        if not name:
+            return redirect(url_for('upload', error='Missing name!'))
+        
+        if file.content_type != "audio/mpeg":
+            return redirect(url_for('upload', error='Invalid filetype'))
 
-    track_queries.add_track(name, userid, genreid, data, description, private, sharecode)
+        # TODO: Check file?
+        data = file.read()
 
-    keywords = request.form["keywords"].lower().split()
-    track_queries.add_keywords(keywords)
+        if len(data) > 10000000:
+            return redirect(url_for('upload', error='File too big'))
 
-    track_url = url_for("track", id=track_queries.max_trackid())
-    return "Upload successful, redirecting to track page...", {"Refresh": "3; url="+track_url}
+        track_queries.add_track(name, userid, genreid, data, description, private, sharecode)
 
-@app.route("/uploadversion/<int:track_id>")
+        keywords = request.form["keywords"].lower().split()
+        track_queries.add_keywords(keywords)
+
+        track_url = url_for("track", id=track_queries.max_trackid())
+        return "Upload successful, redirecting to track page...", {"Refresh": "3; url="+track_url}
+        
+    return render_template("upload.html", genres=genres, error=request.args.get('error'))
+
+@app.route("/uploadversion/<int:track_id>", methods=["GET", "POST"])
 def uploadversion(track_id):
-
     track = track_queries.get_track(track_id)
     track_name = track[1]
-    return render_template("upload_version.html", track_id=track_id, track_name=track_name)
 
-@app.route("/sendversion", methods=["POST"])
-def sendversion():
-    """Uploads a new version of an existing track to showcase alongside previous versions."""
-    check_csrf(request)
+    if request.method == "POST":
+        check_csrf(request)
 
-    file = request.files["file"]
-    track_id = request.form["track_id"]
-    changelog = request.form["changelog"]
+        file = request.files["file"]
+        track_id = request.form["track_id"]
+        changelog = request.form["changelog"]
 
-    data = file.read()
-    # TODO: Check file?
-    
-    track_queries.add_version(track_id, data, changelog)
+        if not file:
+            return redirect(url_for('uploadversion', id=track_id, track_id=track_id, track_name=track_name, error='Missing file!'))
+        
+        if file.content_type != "audio/mpeg":
+            return redirect(url_for('uploadversion', id=track_id, track_id=track_id, track_name=track_name, error='Invalid filetype'))
 
-    track_url = url_for("track", id=track_id)
-    return "Upload successful, redirecting to track page...", {"Refresh": "3; url="+track_url}
+        data = file.read()
+
+        if len(data) > 10000000:
+            return redirect(url_for('uploadversion', id=track_id, error='File too big'))
+        
+        track_queries.add_version(track_id, data, changelog)
+
+        track_url = url_for("track", id=track_id)
+        return "Upload successful, redirecting to track page...", {"Refresh": "3; url="+track_url}
+
+    return render_template("upload_version.html", track_id=track_id, track_name=track_name, error=request.args.get('error'))
 
 @app.route("/edittrack/<int:id>")
 def edittrack(id):

@@ -39,18 +39,37 @@ def login():
 
     return render_template("login.html", error=request.args.get('error'), previous_url = request.args.get('previous_url'))
 
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
-    return render_template("signup.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-@app.route("/registeruser", methods=["POST"])
-def registeruser():
-    username = request.form["username"]
-    password = request.form["password"]
-    admin = request.form["admin"]
-    hash_value = generate_password_hash(password)
-    user_queries.create_user(username, hash_value, admin)
-    return "Signup successful, redirecting to index in 3 seconds...", {"Refresh": "3; url=/"}
+        ## Validation checklist:
+
+        ## No empty username or password
+        if not username:
+            return redirect(url_for('signup', error='Insert a username!'))
+        
+        if not password:
+            return redirect(url_for('signup', error='Insert a password!'))
+        
+        ## Username must be unique
+        if user_queries.user_in_db(username):
+            return redirect(url_for('signup', error='Username already in use!'))
+
+        admin = request.form["admin"]
+        hash_value = generate_password_hash(password)
+        user_queries.create_user(username, hash_value, admin)
+        new_user = user_queries.get_user(username)
+        session["username"] = username
+        session["userid"] = new_user.id
+        session["admin"] = new_user.admin
+        session["csrf_token"] = secrets.token_hex(16)
+        
+        return "Signup successful, logging in and redirecting to index in 3 seconds...", {"Refresh": "3; url=/"}
+
+    return render_template("signup.html", error=request.args.get('error'))
 
 @app.route("/logout")
 def logout():
