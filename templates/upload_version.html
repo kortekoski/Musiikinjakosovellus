@@ -1,7 +1,5 @@
-{% include "loginbox.html" %}
-<head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
-</head>
+{% extends "layout.html" %}
+{% block content %}
 {% if error %}
     <p class="error">Error: {{ error }}</p>
     <!-- This JS removes the error on refresh. -->
@@ -21,3 +19,4 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Send">
 </form>
+{% endblock %}

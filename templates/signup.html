@@ -1,6 +1,5 @@
-<head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
-</head>
+{% extends "layout.html" %}
+{% block content %}
 <h1>Sign up</h1>
 {% if error %}
     <p class="error">Error: {{ error }}</p>
@@ -26,3 +25,4 @@
     <p>
     <input type="submit" value="Sign up">
 </form>
+{% endblock %}

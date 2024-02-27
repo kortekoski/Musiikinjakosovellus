@@ -1,4 +1,5 @@
-{% include "loginbox.html" %}
+{% extends "layout.html" %}
+{% block content %}
 {% if genretracks %}
     <h1>{{ genretracks[0].genrename }}</h1>
     <ul>
@@ -38,3 +39,4 @@
     <h1>No tracks here!</h1>
 {% endif %}
 <p><a href="/">Back to index</a></p>
+{% endblock %}

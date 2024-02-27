@@ -1,5 +1,5 @@
-{% include "loginbox.html" %}
-
+{% extends "layout.html" %}
+{% block content %}
 <form action="/sendplaylistedit" method="POST">
     {% for track in alltracks %}
         {% if track.id in playlisttrackids %}
@@ -23,3 +23,4 @@
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Send edit">
 </form>
+{% endblock %}

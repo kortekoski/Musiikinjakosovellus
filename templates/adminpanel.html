@@ -1,3 +1,6 @@
-{% include "loginbox.html" %}
+{% extends "layout.html" %}
+{% block content %}
+<h1>Admin panel</h1>
 <a href="/createplaylist">CREATE PLAYLIST</a><br>
 <a href="/manageplaylists">MANAGE PLAYLISTS</a>
+{% endblock %}

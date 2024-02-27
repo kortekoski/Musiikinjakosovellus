@@ -1,7 +1,5 @@
-{% include "loginbox.html" %}
-<head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
-</head>
+{% extends "layout.html" %}
+{% block content %}
 <h1>Upload track</h1>
 {% if error %}
     <p class="error">Error: {{ error }}</p>
@@ -35,3 +33,4 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Send">
 </form>
+{% endblock %}
