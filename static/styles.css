@@ -6,6 +6,24 @@
     font-size: 0.8em;
 }
 
+.keyword {
+    display: inline;
+    font-size: 0.8em;
+    background-color: lightgreen;
+    padding: 7px 9px;
+    border-radius: 10px;
+
+    & > a {
+        text-decoration: none;
+        color: black;
+    }
+}
+
+.keyword:hover {
+    background-color: rgb(144, 255, 144);
+}
+
+
 .versiontabs {
     display: flex;
     flex-wrap: wrap;
@@ -37,7 +55,6 @@
     font-weight: bold;
     color: firebrick;
     border-bottom: 2px solid firebrick;
-    
 }
 
 .tabs_radio:checked+.tabs_label+.tabs_content {

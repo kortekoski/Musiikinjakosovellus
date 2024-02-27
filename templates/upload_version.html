@@ -6,7 +6,7 @@
     <p class="error">Error: {{ error }}</p>
     <!-- This JS removes the error on refresh. -->
     <script>
-        window.history.replaceState({}, document.title, "/uploadversion/28");
+        window.history.replaceState({}, document.title, "/uploadversion/{{track_id}}");
     </script>
 {% endif %}
 <h2>Upload a new version of "{{track_name}}"</h2>

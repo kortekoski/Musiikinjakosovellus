@@ -6,14 +6,21 @@ from queries import comment_queries
 
 @app.route("/comment/<int:track_id>", methods=["POST"])
 def comment(track_id):
+    check_csrf(request)
+
     comment_text = request.form["newcomment"]
     user_id = session["userid"]
+
+    if not comment_text:
+        track_url = url_for('track', id=track_id, comment_error='Text field can not be empty!')
+        return redirect(track_url)
+
     comment_queries.add_comment(comment_text, track_id, user_id)
 
     track_url = url_for('track', id=track_id)
     return redirect(track_url)
 
-@app.route("/removecomment/<int:id>")
+@app.route("/removecomment/<int:id>", methods=["POST"])
 def removecomment(id):
     check_csrf(request)
 
@@ -39,7 +46,7 @@ def removecomment(id):
     # Throw a 403 for the rats trying to slip in >:)
     error.throw(403)
 
-@app.route("/editcomment/<int:id>")
+@app.route("/editcomment/<int:id>", methods=["GET", "POST"])
 def editcomment(id):
     comment = comment_queries.get_comment(id)
 
@@ -48,16 +55,19 @@ def editcomment(id):
     elif session["userid"] != comment.user_id:
         error.throw(403)
 
-    return render_template("editcomment.html", comment=comment)
+    if request.method == "POST":
+        check_csrf(request)
 
-@app.route("/sendedit", methods=["POST"])
-def sendedit():
-    check_csrf(request)
+        comment_id = request.form["comment_id"]
+        new_content = request.form["editedcomment"]
 
-    comment_id = request.form["comment_id"]
-    new_content = request.form["editedcomment"]
-    comment_queries.edit_comment(new_content, comment_id)
+        if not new_content:
+            return render_template("editcomment.html", comment=comment, error='Invalid text')
 
-    trackid = request.form["track_id"]
-    track_url = url_for('track', id=trackid)
-    return redirect(track_url)
+        comment_queries.edit_comment(new_content, comment_id)
+
+        trackid = request.form["track_id"]
+        track_url = url_for('track', id=trackid)
+        return redirect(track_url)
+
+    return render_template("editcomment.html", comment=comment, error=request.args.get('error'))

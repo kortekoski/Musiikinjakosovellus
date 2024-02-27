@@ -1,4 +1,16 @@
-<form action="/sendtrackedit" method="POST">
+{% include "loginbox.html" %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+</head>
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/edittrack/{{ trackinfo.trackid }}");
+    </script>
+{% endif %}
+<h1>Edit track info</h1>
+<form action="/edittrack/{{ trackinfo.trackid }}" method="POST">
     <p> Name <br>
         <input type="text" id="trackname" name="trackname" value="{{ trackinfo.name }}">
     <p> Genre <br>
@@ -15,7 +27,11 @@
     <p> Description<br>
         <textarea id="description" name="description" rows="5" cols="40">{{ trackinfo.description }}</textarea>
     <p> Keywords (separate with a space)<br>
+        {% if keywordstring %}
         <textarea id="keywords" name="keywords" rows="3" cols="40" placeholder="e.g. trash nottrash">{{ keywordstring }}</textarea>
+        {% else %}
+        <textarea id="keywords" name="keywords" rows="3" cols="40" placeholder="e.g. trash nottrash"></textarea>
+        {% endif %}
     <p> Set as private?
         <select id="private" name="private">
             {% if trackinfo.private %}

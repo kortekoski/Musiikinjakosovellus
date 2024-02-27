@@ -77,11 +77,11 @@ def uploadversion(track_id):
         changelog = request.form["changelog"]
 
         if not file:
-            return redirect(url_for('uploadversion', id=track_id, track_id=track_id, track_name=track_name, error='Missing file!'))
+            return render_template("upload_version.html", track_id=track_id, track_name=track_name, error='Missing file!')
         
         if file.content_type != "audio/mpeg":
-            return redirect(url_for('uploadversion', id=track_id, track_id=track_id, track_name=track_name, error='Invalid filetype'))
-
+            return render_template("upload_version.html", track_id=track_id, track_name=track_name, error='Invalid filetype')
+        
         data = file.read()
 
         if len(data) > 10000000:
@@ -94,11 +94,12 @@ def uploadversion(track_id):
 
     return render_template("upload_version.html", track_id=track_id, track_name=track_name, error=request.args.get('error'))
 
-@app.route("/edittrack/<int:id>")
+@app.route("/edittrack/<int:id>", methods=["GET", "POST"])
 def edittrack(id):
     trackinfo = track_queries.get_trackinfo(id)
 
     keywords = track_queries.get_keywords(id)
+    keywordstring = None
     if keywords:
         keywordstring = ' '.join(word[0] for word in keywords)
 
@@ -109,28 +110,27 @@ def edittrack(id):
 
     genres = genre_queries.get_genres()
 
-    if keywords:
-        return render_template("edittrack.html", trackinfo=trackinfo, genres=genres, keywordstring=keywordstring)
-    else:
-        return render_template("edittrack.html", trackinfo=trackinfo, genres=genres)
+    if request.method == "POST":
+        check_csrf(request)
 
-@app.route("/sendtrackedit", methods=["POST"])
-def sendtrackedit():
-    check_csrf(request)
+        name = request.form["trackname"]
+        genre_id = request.form["genre"]
+        description = request.form["description"]
+        private = request.form["private"]
+        track_id = request.form["trackid"]
 
-    name = request.form["trackname"]
-    genre_id = request.form["genre"]
-    description = request.form["description"]
-    private = request.form["private"]
-    track_id = request.form["trackid"]
+        if not name:
+            return render_template("edittrack.html", trackinfo=trackinfo, genres=genres, keywordstring=keywordstring, error='Insert a name!')
 
-    track_queries.edit_track(name, genre_id, description, private, track_id)
+        track_queries.edit_track(name, genre_id, description, private, track_id)
 
-    keywords = request.form["keywords"].lower().split()
-    track_queries.add_keywords(keywords, track_id)
+        keywords = request.form["keywords"].lower().split()
+        track_queries.add_keywords(keywords, track_id)
 
-    track_url = url_for('track', id=track_id)
-    return redirect(track_url)
+        track_url = url_for('track', id=track_id)
+        return redirect(track_url)
+
+    return render_template("edittrack.html", trackinfo=trackinfo, genres=genres, keywordstring=keywordstring, error=request.args.get('error'))
 
 # This route plays a track in the database.
 @app.route("/play/<int:track_id>/<int:version_id>")
@@ -180,4 +180,8 @@ def track(id):
     # Fetch the comments for the track:
     comments = track_queries.get_track_comments(id)
 
-    return render_template("track.html", track=track, versions=versions, comments=comments, sharelink=sharelink)
+    # Fetch the keywords:
+    keywords = track_queries.get_keywords(id)
+
+    comment_error = request.args.get("comment_error")
+    return render_template("track.html", track=track, versions=versions, comments=comments, sharelink=sharelink, keywords=keywords, comment_error=comment_error)

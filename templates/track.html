@@ -35,13 +35,13 @@
             <input type="radio" class="tabs_radio" name="tabs_version" id="versiontab0" checked>
             <label for="versiontab0" class="tabs_label">Version 0</label>
             <div class="tabs_content">
-                <audio controls src="/play/{{ track.id }}/0" onplay="playTrack(0)"></audio>
+                <audio controls src="/play/{{ track.id }}/0" type="audio/mpeg" onplay="playTrack(0)"></audio>
             </div>
             {% for version in versions %}
                 <input type="radio" class="tabs_radio" name="tabs_version" id="versiontab{{version.version_number}}">
                 <label for="versiontab{{version.version_number}}" class="tabs_label">Version {{version.version_number}}</label>
                 <div class="tabs_content">
-                    <audio controls src="/play/{{ track.id }}/{{version.version_number}}" onplay="playTrack({{version.version_number}})"></audio>
+                    <audio controls src="/play/{{ track.id }}/{{version.version_number}}" type="audio/mpeg" onplay="playTrack({{version.version_number}})"></audio>
                     <div class="changelogs">
                         <h3>Changelog</h3>
                         {% if version.changelog %}
@@ -55,7 +55,7 @@
         </div>
 {% else %}
     <p>
-        <audio controls src="/play/{{ track.id }}/0"></audio>
+        <audio controls src="/play/{{ track.id }}/0" type="audio/mpeg"></audio>
 {% endif %}
 {% if track.user_id == session.userid %}
     <p>
@@ -66,7 +66,13 @@
 {% if track.private %}
     <p>&#128274 <i>This track is private.</i></p>
 {% endif %}
-
+{% if keywords %}
+    <p class="keywords">
+    {% for k in keywords %}
+        <p class="keyword"><a href="/searchresult?query={{ k[0] }}">#{{ k[0] }}</a></p>
+    {% endfor %}
+    </p>
+{% endif %}
 <h3>Description</h3>
 {% if track.description %}
     <p>{{ track.description }}</p>
@@ -80,17 +86,17 @@
 {% if comments %}
 <ul>
 {% for comment in comments %}
-    <li>{{ comment.content }} -<i>{{ comment.username }}</i> ({{ comment.date.ctime() }})
+    <li class="comment">{{ comment.content }} -<i>{{ comment.username }}</i> ({{ comment.date.ctime() }})
     {% if comment.user_id == session.userid %}
         <form action="/editcomment/{{ comment.id }}" method="GET">
             <input type="submit" value="Edit">
         </form>
-        <form action="/removecomment/{{ comment.id }}" method="DELETE">
+        <form action="/removecomment/{{ comment.id }}" method="POST">
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Delete">
         </form>
     {% elif session.admin == True %}
-        <form action="/removecomment/{{ comment.id }}" method="DELETE">
+        <form action="/removecomment/{{ comment.id }}" method="POST">
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Delete">
         </form>
@@ -101,6 +107,13 @@
 <p>No comments yet. Leave one below!</p>
 {% endif %}
 {% if session.username %}
+{% if comment_error %}
+    <p class="error">{{ comment_error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/track/{{ track.id }}");
+    </script>
+{% endif %}
 <form action="/comment/{{ track.id }}" method="POST">
     <textarea id="newcomment" name="newcomment" rows="5" cols="40"></textarea><br>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

@@ -1,5 +1,15 @@
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+</head>
 <h1>Edit comment</h1>
-<form action="/sendedit" method="POST">
+{% if error %}
+    <p class="error">Error: {{ error }}</p>
+    <!-- This JS removes the error on refresh. -->
+    <script>
+        window.history.replaceState({}, document.title, "/editcomment/{{comment.id}}");
+    </script>
+{% endif %}
+<form action="/editcomment/{{ comment.id }}" method="POST">
     <textarea id="editedcomment" name="editedcomment" rows="5" cols="40" autofocus>{{ comment.content }}</textarea>
     <input type="hidden" name="track_id" value="{{comment.track_id}}">
     <input type="hidden" name="comment_id" value="{{comment.id}}">
