@@ -126,7 +126,9 @@ def search(query):
         LEFT JOIN Users ON Tracks.user_id=Users.id \
         LEFT JOIN KeywordsTracks ON Tracks.id=KeywordsTracks.track_id \
         LEFT JOIN Keywords ON Keywordstracks.keyword_id=Keywords.id \
-        WHERE LOWER(name) LIKE :query OR LOWER(content) LIKE :query"
+        WHERE (LOWER(name) LIKE :query OR LOWER(content) LIKE :query) \
+        AND visible=True\
+        AND private=False"
     result = db.session.execute(text(sql), {"query":"%"+query+"%"})
     tracks = result.fetchall()
 

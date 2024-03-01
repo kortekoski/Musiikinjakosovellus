@@ -18,6 +18,13 @@ def get_user(username):
 
     return user
 
+def get_user_byid(id):
+    sql = "SELECT username FROM Users WHERE id=:id"
+    result = db.session.execute(text(sql), {"id":id})
+    user = result.fetchone()
+
+    return user
+
 def create_user(username, hash_value, admin):
     sql = "INSERT INTO Users (username, password, admin) VALUES (:username, :password, :admin)"
     db.session.execute(text(sql), {"username":username, "password":hash_value, "admin":admin})

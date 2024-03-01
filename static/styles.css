@@ -1,3 +1,15 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+    padding: 0;
+    border: 0;
+    background: inherit;
+    cursor: pointer;
+    outline: none;
+}
+
 .error {
     color: red;
 }
@@ -9,7 +21,7 @@
 .keyword {
     display: inline;
     font-size: 0.8em;
-    background-color: lightgreen;
+    background-color: #E5BEEC;
     padding: 7px 9px;
     border-radius: 10px;
 
@@ -18,11 +30,6 @@
         color: black;
     }
 }
-
-.keyword:hover {
-    background-color: rgb(144, 255, 144);
-}
-
 
 .versiontabs {
     display: flex;
@@ -51,38 +58,113 @@
     display: none;
 }
 
+/* Audio player css below */
+.audio-player {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    height: 80px;
+    background: #fff;
+}
+
+#play-icon {
+    outline: none;
+}
+
 .tabs_radio:checked+.tabs_label {
     font-weight: bold;
-    color: firebrick;
-    border-bottom: 2px solid firebrick;
+    color: #2A2F4F;
+    border-bottom: 2px solid #2A2F4F;
 }
 
 .tabs_radio:checked+.tabs_label+.tabs_content {
     display: initial;
 }
 
+.comment {
+    background-color: #FDE2F3;
+    display: block;
+    padding: 10px 10px;
+    width: 85%;
+    border-radius: 2px;
+}
+
+.comment-user {
+    display: inline;
+    color: black;
+    background-color: #E5BEEC;
+    padding: 3px 5px;
+    border-radius: 10px;
+    margin-right: 7px;
+}
+
+.comment-date {
+    display: inline;
+    text-align: right;
+}
+
+.comment-content {
+    padding: 25px 2px;
+}
+
+.comment-button-container {
+    display: flex;
+}
+
+.comment-button {
+    background-color: #E5BEEC;
+    border: 1px solid transparent;
+    color: black;
+    padding: 3px 5px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.button {
+    background-color: #E5BEEC;
+    border: 1px solid transparent;
+    color: black;
+    padding: 3px 5px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 7px;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+#send-comment-button {
+    margin-top: 5px;
+}
+
+.comment-button:hover {
+    border-color: #917FB3;
+    background-color: #e5c2eb;
+}
+
+.button:hover {
+    border-color: #917FB3;
+    background-color: #e5c2eb;
+}
+
 .changelogs {
-    background-color: lightgray;
+    background-color: #FDE2F3;
     padding: 20x;
     width: 400px;
 }
 
-.navbar ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: lightgreen;
-}
 
-.navbar li {
-    float: left;
-    display: block;
-    text-align: center;
-    padding: 10px 12px;
-    text-decoration: none;
-}
 
 .searchbar {
-    background-color: lightgreen;
+    background-color: #917FB3;
+}
+
+#navbar-search {
+    width: 300px;
 }

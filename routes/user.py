@@ -2,21 +2,33 @@ from flask import redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
 from queries import user_queries
+from utils import error
 import secrets
 
 @app.before_request
 def update_session_current_url():
     """This exists so that redirection to the previous page works after login."""
-    session["current_url"] = request.url
+    if "styles.css" not in request.url and "login" not in request.url and "signup" not in request.url:
+        session["current_url"] = request.url
 
 @app.route("/profile/<int:id>")
 def profile(id):
+    user = user_queries.get_user_byid(id)
+
+    if not user:
+        error.throw(404)
+
+    username = user[0]
     tracks = user_queries.get_usertracks(id)
-    return render_template("profile.html", id=id, tracks=tracks)
+    return render_template("profile.html", id=id, tracks=tracks, username=username)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    previous_url = session["current_url"]
+    if not previous_url:
+        previous_url = url_for('/')
+    
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -33,7 +45,7 @@ def login():
                 session["admin"] = user.admin
                 session["csrf_token"] = secrets.token_hex(16)
 
-                return redirect(request.form["redirect_url"])
+                return redirect(previous_url)
             else:
                 return redirect(url_for('login', error='Invalid password'))
 
@@ -77,4 +89,5 @@ def logout():
     del session["userid"]
     del session["csrf_token"]
     session["admin"] = False
+
     return redirect("/")

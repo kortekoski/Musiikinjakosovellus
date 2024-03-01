@@ -2,19 +2,31 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script>
-        // Allow only one audio file to play at a time
+        // Scripts for the audio player
         const playTrack = (i) => {
             const audios = document.querySelectorAll('audio');
             const currentAudio = audios[i];
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
 
+            // Allow only one audio file to play at a time
             audios.forEach((audio) => {
                 if (audio !== currentAudio) {
                     audio.pause();
                 }
             });
 
-            currentAudio.play();
+            if (currentAudio.paused) {
+                currentAudio.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'inline';
+            } else {
+                currentAudio.pause();
+                playIcon.style.display = 'inline';
+                pauseIcon.style.display = 'none';
+            }
         }
 
         const showShare = () => {
@@ -35,7 +47,20 @@
             <input type="radio" class="tabs_radio" name="tabs_version" id="versiontab0" checked>
             <label for="versiontab0" class="tabs_label">Version 0</label>
             <div class="tabs_content">
-                <audio controls src="/play/{{ track.id }}/0" type="audio/mpeg" onplay="playTrack(0)"></audio>
+                <div class="audio-player">
+                    <audio controls> 
+                        <source src="/play/{{ track.id }}/0" type="audio/mpeg">
+                        Your browser does not support the audio tag.
+                    </audio>
+                    <!--
+                    <div class="audio-controls">
+                        <button onclick="playTrack(0)">
+                            <i id="play-icon" class="bi-play" style="font-size: 2rem;"></i>
+                            <i id="pause-icon" class="bi-pause" style="font-size: 2rem; display: none;"></i>
+                        </button>
+                    </div>
+                    -->
+                </div>
             </div>
             {% for version in versions %}
                 <input type="radio" class="tabs_radio" name="tabs_version" id="versiontab{{version.version_number}}">
@@ -55,7 +80,20 @@
         </div>
 {% else %}
     <p>
-        <audio controls src="/play/{{ track.id }}/0" type="audio/mpeg"></audio>
+        <div class="audio-player">
+            <audio controls> 
+                <source src="/play/{{ track.id }}/0" type="audio/mpeg">
+                Your browser does not support the audio tag.
+            </audio>
+            <!--
+            <div class="audio-controls">
+                <button onclick="playTrack(0)">
+                    <i id="play-icon" class="bi-play" style="font-size: 2rem;"></i>
+                    <i id="pause-icon" class="bi-pause" style="font-size: 2rem; display: none;"></i>
+                </button>
+            </div>
+            -->
+        </div>
 {% endif %}
 {% if track.user_id == session.userid %}
     <p>
@@ -84,25 +122,39 @@
 <!-- If there are comments for the track, they are listed here. -->
 <!-- TODO: Make the comments look better. Maybe have them in boxes?-->
 {% if comments %}
-<ul>
 {% for comment in comments %}
-    <li class="comment">{{ comment.content }} -<i>{{ comment.username }}</i> ({{ comment.date.ctime() }})
+    <div class="comment">
+        <div class="comment-user">
+            {{ comment.username }}
+        </div>
+        <div class="comment-date">
+            ({{ comment.date.ctime() }})
+        </div>
+        <br>
+        <div class="comment-content">
+            {{ comment.content }}
+        </div>
     {% if comment.user_id == session.userid %}
-        <form action="/editcomment/{{ comment.id }}" method="GET">
-            <input type="submit" value="Edit">
-        </form>
-        <form action="/removecomment/{{ comment.id }}" method="POST">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <input type="submit" value="Delete">
-        </form>
+        <div class="comment-button-container">
+            <form action="/editcomment/{{ comment.id }}" method="GET">
+                <input class="comment-button" type="submit" value="Edit">
+            </form>
+            <form action="/removecomment/{{ comment.id }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input class="comment-button" type="submit" value="Delete">
+            </form>
+        </div>
     {% elif session.admin == True %}
-        <form action="/removecomment/{{ comment.id }}" method="POST">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <input type="submit" value="Delete">
-        </form>
+        <div class="comment-button-container">
+            <form action="/removecomment/{{ comment.id }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input class="comment-button" type="submit" value="Delete">
+            </form>
+        </div>
     {% endif %}
+    </div>
+    <br>
 {% endfor %}
-</ul>
 {% else %}
 <p>No comments yet. Leave one below!</p>
 {% endif %}
@@ -115,9 +167,9 @@
     </script>
 {% endif %}
 <form action="/comment/{{ track.id }}" method="POST">
-    <textarea id="newcomment" name="newcomment" rows="5" cols="40"></textarea><br>
+    <textarea id="newcomment" name="newcomment" rows="8" cols="80"></textarea><br>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <input type="submit" value="Send">
+    <input class="button" id="send-comment-button" type="submit" value="Send comment">
 </form>
 {% else %}
 <i>Log in to leave a comment.</i>
