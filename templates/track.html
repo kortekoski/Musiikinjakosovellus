@@ -38,6 +38,7 @@
 <body>
 {% include "loginbox.html" %}
 
+<div class="container">
 <h2>{{ track.name }}</h2>
 <!-- The different versions of the track will hopefully have their own tabs here. -->
 {% if versions %}
@@ -174,4 +175,5 @@
 {% else %}
 <i>Log in to leave a comment.</i>
 {% endif %}
+</div>
 </body>

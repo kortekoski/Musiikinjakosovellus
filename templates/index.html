@@ -16,25 +16,38 @@
     </li>
     {% endfor %}
 </ul>
-<h2>Genres</h2>
-<ul>
-    {% for genre in genres %}
-        {% if session.admin %}
-            {% if info[genre.id][0] == 0 and info[genre.id][1] == 0 %}
-                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: 0)</li>
+<h2>Browse different genres</h2>
+<div class="container text-center">
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+{% for genre in genres %}
+    <div class="col">
+    <div class="card bg-dark text-white h-60" style="width: 12em;">
+        <img src="/static/{{genre.id}}.jpg" class="card-img" alt="{{ genre.name }}" height="120em">
+        <div class="card-img-top">
+            <h5 class="card-title" style="background-color: black;">{{genre.name}}</h5>
+        </div>
+        <div class="card-body">
+            {% if session.admin %}
+                {% if info[genre.id][0] == 0 and info[genre.id][1] == 0 %}
+                    <p class="card-text"><small class="text-muted">Tracks: 0</small></p>
+                {% else %}
+                    <p class="card-text"><small class="text-muted">Public tracks: {{info[genre.id][0]}}<br> 
+                        Private tracks: {{info[genre.id][1]}}<br>Last uploaded: {{info[genre.id][3][0].ctime()}}</small></p>
+                {% endif %}
             {% else %}
-                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Public tracks: {{info[genre.id][0]}}, 
-                    Private tracks: {{info[genre.id][1]}}, last uploaded {{info[genre.id][3][0].ctime()}})</li>
+                {% if info[genre.id][0] == 0%}
+                    <p class="card-text"><small class="text-muted">Tracks: 0</small></p>
+                {% else %}
+                    <p class="card-text"><small class="text-muted">Tracks: {{info[genre.id][0]}}<br>Last uploaded: {{info[genre.id][2][0].ctime()}}</small></p>
+                {% endif %}
             {% endif %}
-        {% else %}
-            {% if info[genre.id][0] == 0%}
-                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: 0)</li>
-            {% else %}
-                <li><a href="/genre/{{ genre.id }}">{{ genre.name }}</a> (Tracks: {{info[genre.id][0]}}, last uploaded {{info[genre.id][2][0].ctime()}})</li>
-            {% endif %}
-        {% endif %}
-    {% endfor %}
-</ul>
+            <a href="/genre/{{ genre.id }}" class="stretched-link"></a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+    </div>
+</div>
 <h2>Playlists</h2>
 <h3>Different tracks for different moods.</h3>
 <ul>
