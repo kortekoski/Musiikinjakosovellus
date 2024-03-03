@@ -31,7 +31,9 @@ Siirry oikeaan hakemistoon (`cd Musiikinjakosovellus`). Aktivoi virtuaaliympäri
 
 Luo projektille tietokanta psql:ssä.
 
-`CREATE DATABASE tietokannan_nimi`
+`psql`
+
+`CREATE DATABASE tietokannan_nimi;`
 
 Palaa komentoriville komennolla `\q` ja syötä tietokannan skeema tietokantaan.
 
@@ -39,7 +41,7 @@ Palaa komentoriville komennolla `\q` ja syötä tietokannan skeema tietokantaan.
 
 Luo kansioon .env-tiedosto ja määritä sen sisältö.
 
-`DATABASE_URL=postgresql:///käyttäjänimi`
+`DATABASE_URL=postgres:///tietokannan_nimi`
 
 `SECRET_KEY=(salainen avain)`
 
@@ -49,6 +51,6 @@ Salaisen avaimen voi luoda esimerkiksi Python-tulkilla:
 `import secrets`
 `secrets.token_hex(16)`
 
-Lopuksi sovelluksen pitäisi käynnistyä ajamalla `flask run`.
+Lopuksi sovelluksen pitäisi käynnistyä ajamalla `flask run`. Samalla tulee pitää postgresql-tietokantaa auki toisessa terminaalissa (`start-pg.sh`).
 
 Huom.! Aivan aluksi testaajan on tehtävä admin-käyttäjä (create account -> admin yes) ja lisättävä muutama genre (admin panel -> add genre). Muuten oikein mikään muu ei toimi!

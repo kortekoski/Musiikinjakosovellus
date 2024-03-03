@@ -7,8 +7,15 @@ def index():
     """The index of the application. Shows the genre areas where the tracks are plus editor spotlight & playlists."""
     genres = genre_queries.get_genres()
     spotlight = track_queries.get_spotlight()
-    first_spotlight = spotlight[0]
-    rest_spotlight = spotlight[1:]
+
+    first_spotlight = None
+    rest_spotlight = None
+
+    if spotlight:
+        first_spotlight = spotlight[0]
+    
+    if len(spotlight) > 1:
+        rest_spotlight = spotlight[1:]
 
     info = {}
     for genre in genres:
@@ -31,7 +38,14 @@ def index():
     
     playlists = playlist_queries.get_playlists()
 
-    return render_template("index.html", genres=genres, first_spotlight=first_spotlight, rest_spotlight=rest_spotlight, info=info, playlists=playlists)
+    if not first_spotlight and not rest_spotlight:
+        return render_template("index.html", genres=genres, first_spotlight="Empty", rest_spotlight="Empty", info=info, playlists=playlists)
+
+    if first_spotlight and not rest_spotlight:
+        return render_template("index.html", genres=genres, first_spotlight=first_spotlight, rest_spotlight="Empty", info=info, playlists=playlists)
+
+    if first_spotlight and rest_spotlight:
+        return render_template("index.html", genres=genres, first_spotlight=first_spotlight, rest_spotlight=rest_spotlight, info=info, playlists=playlists)
 
 @app.route("/searchresult")
 def searchresult():
