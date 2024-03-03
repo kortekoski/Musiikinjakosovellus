@@ -1,35 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
+<div class="container">
 <h1>Profile: {{ username }}</h1>
 <h2>Uploaded tracks</h2>
 {% if not tracks %}
     <p>Nothing here!</p>
 {% else %}
-    <ul>
+    <div class="container">
     {% for track in tracks%}
+        <div class="container" style="margin-bottom: 1em; padding: 15px;background-color: #E5BEEC; border-radius: 10px;">
         {% if track.private %}
             {% if session.userid == tracks[0].userid or session.admin %}
-                <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a> &#128274  </li>
+                <a class="profile-track" href="/track/{{ track.trackid }}">{{ track.name }}</a> &#128274  <br>
             {% endif %}
         {% else %}
-            <li><a href="/track/{{ track.trackid }}">{{ track.name }}</a></li>
+            <a class="profile-track" href="/track/{{ track.trackid }}">{{ track.name }}</a><br>
         {% endif %}
         {% if session.userid == track.userid or session.admin %}
-        <p>
-            <form action="/edittrack/{{ track.trackid }}">
-                <input type="submit" value="Edit track info">
-            </form>
-            <form action="/uploadversion/{{ track.trackid }}">
-                <input type="submit" value="Upload new version">
-            </form>
+        <div class="btn-group" role="group" style="margin-top: 1em;">
+            <a class="btn btn-secondary" href="/edittrack/{{ track.trackid }}">Edit track info</a>
+            <a class="btn btn-secondary" href="/uploadversion/{{ track.trackid }}">Upload new version</a>
             <form action="/deletetrack" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 <input type="hidden" name="trackid" value="{{ track.trackid }}">
                 <input type="hidden" name="userid" value="{{ track.userid }}">
-                <input type="submit" value="Delete track">
+                <input class="btn btn-secondary" type="submit" value="Delete track">
             </form>
+        </div>
         {% endif %}
+        </div>
     {% endfor %}
-    </ul>
+    </div>
 {% endif %}
+</div>
 {% endblock %}

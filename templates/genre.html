@@ -1,40 +1,46 @@
 {% extends "layout.html" %}
 {% block content %}
 {% if genretracks %}
-    <h1>{{ genretracks[0].genrename }}</h1>
-    <ul>
+<h1>{{ genretracks[0].genrename }}</h1>
+<div class="container">
         {% for track in genretracks %}
+        <div class="container" style="margin-bottom: 1em; padding: 15px;border: 3px solid #E5BEEC; border-radius: 10px;">
             {% if not track.private %}
-                <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a></li>
+                <a class="profile-track" href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a><br>
                 {% if session.admin or session.userid == track.user_id %}
+                <br>
                     <form action="/deletetrack" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
                         <input type="hidden" name="genreid" value="{{ track.genre_id}}">
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                        <input type="submit" value="Delete track">
+                        <input class="button" type="submit" value="Delete track">
                     </form>
                 {% endif %}
                 {% if session.admin %}
+                <br>
                     <form action="/addtospotlight" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                        <input type="submit" value="Add to spotlight">
+                        <input class="button" type="submit" value="Add to spotlight">
                     </form>
                 {% endif %}
             {% endif %}
             {% if track.private %}
                 {% if session.admin or session.userid == track.user_id %}
-                    <li><a href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)</li>
+                    <a class="profile-track" href="/track/{{ track.id }}">{{ track.username }} - {{ track.trackname }}</a> (PRIVATE)
+                    <br>
+                    <br>
                     <form action="/deletetrack" method="POST">
                         <input type="hidden" name="trackid" value="{{ track.id }}">
                         <input type="hidden" name="genreid" value="{{ track.genre_id}}">
                         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                        <input type="submit" value="Delete track">
+                        <input class="button" type="submit" value="Delete track">
                     </form>
                 {% endif %}
             {% endif %}
+        </div>
         {% endfor %}
-    </ul>
+</div>
 {% else %}
     <h1>No tracks here!</h1>
 {% endif %}

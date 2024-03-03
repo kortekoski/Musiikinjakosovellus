@@ -15,24 +15,40 @@ Sovelluksen ominaisuudet:
 
 ## Testausohjeet
 
-Sovellus on testattavissa osoitteessa https://musiikinjakosovellus.fly.dev/. Alla on myös ohjeet testaukseen lokaalisti. Sovelluksessa toimivat tällä hetkellä kaikki etukäteen suunnitellut ominaisuudet, jotka on kuvattu yllä. Jäljellä on käytettävyyteen ja ulkoasuun liittyviä asioita.
+Sovellus on valitettavasti testattavissa vain lokaalisti. Sovelluksen käyttäminen vaatii, että python3 ja postgresql on asennettu. Ohjeet testaamiseen ovat seuraavat:
 
-Kloonaa tämä repositorio omalle koneellesi ja siirry sen juurikansioon. Luo kansioon .env-tiedosto ja määritä sen sisältö seuraavanlaiseksi:
+Kloonaa tämä repositorio omalle koneellesi ja siirry sen juurikansioon.
 
-DATABASE_URL=postgresql:///käyttäjänimi
+`git clone https://www.github.com/kortekoski/Musiikinjakosovellus`
 
-SECRET_KEY=(salainen avain)
+Siirry oikeaan hakemistoon (`cd Musiikinjakosovellus`). Aktivoi virtuaaliympäristö ja asenna sovelluksen riippuvuudet.
 
-Aktivoi virtuaaliympäristö ja asenna sovelluksen riippuvuudet komennoilla
+`python3 -m venv venv`
 
-$ python3 -m venv venv
+`source venv/bin/activate`
 
-$ source venv/bin/activate
+`pip install -r ./requirements.txt`
 
-$ pip install -r ./requirements.txt
+Luo projektille tietokanta psql:ssä.
 
-Skeeman saa asennettua komennolla psql < schema.sql.
+`CREATE DATABASE tietokannan_nimi`
 
-Jotta sovellus toimisi, on Genres-tauluun myös lisättävä sisältöä esimerkiksi komennolla INSERT INTO Genres (name) VALUES ('A', 'B', 'C', 'D');. 
+Palaa komentoriville komennolla `\q` ja syötä tietokannan skeema tietokantaan.
 
-Lopuksi sovellus käynnistyy komennolla flask run.
+`psql tietokannan_nimi < schema.sql`
+
+Luo kansioon .env-tiedosto ja määritä sen sisältö.
+
+`DATABASE_URL=postgresql:///käyttäjänimi`
+
+`SECRET_KEY=(salainen avain)`
+
+Salaisen avaimen voi luoda esimerkiksi Python-tulkilla:
+
+`python3`
+`import secrets`
+`secrets.token_hex(16)`
+
+Lopuksi sovelluksen pitäisi käynnistyä ajamalla `flask run`.
+
+Huom.! Aivan aluksi testaajan on tehtävä admin-käyttäjä (create account -> admin yes) ja lisättävä muutama genre (admin panel -> add genre). Muuten oikein mikään muu ei toimi!

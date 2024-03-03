@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Add genre</h1>
+{% if errorm %}
+    <p class="error">{{ errorm }}</p>
+{% endif %}
+<div class="container">
+    <form action="/addgenre" method="POST">
+        Genre name:
+        <input type="text" name="genrename" required><br><br>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input class="btn btn-secondary" type="submit" value="Create">
+    </form>
+</div>
+{% endblock %}

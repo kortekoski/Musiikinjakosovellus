@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Playlist: {{tracks[0].playlistname}}</h1>
-<ol>
+<div class="container">
     {% for track in tracks %}
-        <li>
-            <a href="/track/{{ track.track_id }}">{{track.trackname}}</a> by {{track.username}}
-        </li>
+        <div class="container" style="margin-bottom: 1em; padding: 15px;background-color: #E5BEEC; border-radius: 10px;">
+            <a class="profile-track" href="/track/{{ track.track_id }}">{{track.trackname}}</a> by {{track.username}}
+        </div>
     {% endfor %}
-</ol>
+</div>
 {% endblock %}

@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-<form action="/sendplaylistedit" method="POST">
+<h1>Edit comment</h1>
+{% if errorm %}
+<p class="error">{{errorm}}</p>
+{% endif %}
+<form action="/editplaylist/{{playlist.id}}" method="POST">
     {% for track in alltracks %}
         {% if track.id in playlisttrackids %}
             <input type="checkbox" name="checked" value="{{track.id}}" checked>
@@ -12,10 +16,10 @@
     {% endfor %}
     <p>
     Playlist name:
-    <input type="text" name="playlistname" value="{{ playlist.name }}">
+    <input type="text" name="playlistname" value="{{ playlist.name }}" required>
     <p>
     Description:<br>
-    <textarea id="description" name="description" rows="5" cols="40">{{ playlist.description }}</textarea>
+    <textarea id="description" name="description" rows="5" cols="40" required>{{ playlist.description }}</textarea>
     <p>
     <input type="hidden" name="playlistid" value="{{ playlist.id }}">
     <input type="hidden" name="originalname" value="{{ playlist.name }}">

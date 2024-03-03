@@ -7,16 +7,16 @@
         window.history.replaceState({}, document.title, "/uploadversion/{{track_id}}");
     </script>
 {% endif %}
-<h2>Upload a new version of "{{track_name}}"</h2>
+<h1>Upload a new version of "{{track_name}}"</h1>
 <form action="/uploadversion/{{track_id}}" method="POST" enctype="multipart/form-data">
     File (.mp3, max file size 10 MB)* <br>
-        <input type="file" name="file">
+        <input type="file" name="file" style="padding: 10px 0px;">
     <p> Changelog<br>
         <textarea id="changelog" name="changelog" rows="5" cols="40" placeholder="e.g. added a massive saw lead at 1:30"></textarea>
     <p class="required_fields">Fields marked with an * are required.</p>
     <p>
         <input type="hidden" name="track_id" value="{{track_id}}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="submit" value="Send">
+        <input class="btn btn-secondary" type="submit" value="Send">
 </form>
 {% endblock %}

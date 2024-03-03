@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% extends "layout.html" %}
+{% block head %}
     <script>
         // Scripts for the audio player
         const playTrack = (i) => {
@@ -34,13 +31,12 @@
             alert(link);
         }
     </script>
-</head>
-<body>
-{% include "loginbox.html" %}
-
+{% endblock %}
+{% block content %}
 <div class="container">
 <h2>{{ track.name }}</h2>
 <!-- The different versions of the track will hopefully have their own tabs here. -->
+<div class="container" style="border: 3px solid #E5BEEC">
 {% if versions %}
     <!-- tab test starts here -->
     <p>
@@ -69,7 +65,7 @@
                 <div class="tabs_content">
                     <audio controls src="/play/{{ track.id }}/{{version.version_number}}" type="audio/mpeg" onplay="playTrack({{version.version_number}})"></audio>
                     <div class="changelogs">
-                        <h3>Changelog</h3>
+                        <h5>Changelog</h5>
                         {% if version.changelog %}
                             <p>{{version.changelog}}</p>
                         {% else %}
@@ -96,10 +92,11 @@
             -->
         </div>
 {% endif %}
+</div>
 {% if track.user_id == session.userid %}
     <p>
         <!-- Not the best way, but it works for now. -->
-        <button onclick=showShare()>Share</button>
+        <button class="button" onclick=showShare() style="margin-top: 1em;">Share</button>
     </p>
 {% endif %}
 {% if track.private %}
@@ -176,4 +173,4 @@
 <i>Log in to leave a comment.</i>
 {% endif %}
 </div>
-</body>
+{% endblock %}

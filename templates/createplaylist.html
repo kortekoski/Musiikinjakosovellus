@@ -1,21 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Create playlist</h1>
+{% if errorm %}
+    <p class="error">{{ errorm }}</p>
+{% endif %}
 <ul>
-    <form action="/registerplaylist" method="POST">
+    <form action="/createplaylist" method="POST">
+        <fieldset required>
         {% for track in tracks %}
             <input type="checkbox" name="checked" value="{{track.id}}">
             <label for="{{track.id}}">{{track.name}}</label><br>
         {% endfor %}
+        </fieldset>
         <p>
         Playlist name:
-        <input type="text" name="playlistname">
+        <input type="text" name="playlistname" required>
         <p>
         Description:<br>
-        <textarea id="description" name="description" rows="5" cols="40"></textarea>
+        <textarea id="description" name="description" rows="5" cols="40" required></textarea>
         <p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="submit" value="Create">
+        <input class="btn btn-secondary" type="submit" value="Create">
     </form>
 </ul>
 {% endblock %}

@@ -8,7 +8,7 @@ import secrets
 @app.before_request
 def update_session_current_url():
     """This exists so that redirection to the previous page works after login."""
-    if "styles.css" not in request.url and "login" not in request.url and "signup" not in request.url:
+    if "static" not in request.url and "login" not in request.url and "signup" not in request.url:
         session["current_url"] = request.url
 
 @app.route("/profile/<int:id>")

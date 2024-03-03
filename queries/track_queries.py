@@ -8,6 +8,13 @@ def get_tracks():
 
     return tracks
 
+def get_public_tracks():
+    sql = "SELECT * FROM Tracks WHERE visible=True AND private=False"
+    result = db.session.execute(text(sql))
+    tracks = result.fetchall()
+
+    return tracks
+
 def get_track(id):
     sql = "SELECT * FROM Tracks WHERE id=:id"
     result = db.session.execute(text(sql), {"id":id})
@@ -135,7 +142,7 @@ def search(query):
     return tracks
 
 def get_spotlight():
-    sql = "SELECT Spotlight.track_id, Tracks.name, Users.username FROM Spotlight \
+    sql = "SELECT Spotlight.track_id, Spotlight.description, Tracks.name, Users.username FROM Spotlight \
         LEFT JOIN Tracks ON Spotlight.track_id=Tracks.id \
         LEFT JOIN Users ON Users.id=Tracks.user_id \
         WHERE Tracks.visible=True"

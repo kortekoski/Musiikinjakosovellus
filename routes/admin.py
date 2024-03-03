@@ -33,3 +33,20 @@ def removespotlight():
         return redirect('/')
 
     return error.throw(403)
+
+@app.route("/addgenre", methods=["GET", "POST"])
+def addgenre():
+    if session["admin"]:
+
+        if request.method == "POST":
+            genrename = request.form.get("genrename")
+
+            if not genrename:
+                return render_template("addgenre.html", errorm='Insert a name!')
+            
+            admin_queries.add_genre(genrename)
+            return redirect("/")
+
+        return render_template("addgenre.html", errorm=request.args.get("errorm"))
+
+    return error.throw(403)

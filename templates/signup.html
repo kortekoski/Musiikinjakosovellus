@@ -9,13 +9,13 @@
     </script>
 {% endif %}
 <form action="/signup" method="POST">
-    <div>
+    <div class="mb-3">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username">
     </div>
-    <div>
+    <div class="mb-3">
         <label for="password">Password:</label>
-        <input type="text" id="password" name="password">
+        <input type="password" id="password" name="password">
     </div>
     <p> Admin:
     <select id="admin" name="admin">
@@ -24,5 +24,6 @@
     </select>
     <p>
     <input type="submit" value="Sign up">
+</div>
 </form>
 {% endblock %}

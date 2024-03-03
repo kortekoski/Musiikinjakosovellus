@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL").replace("://", "ql://", 1)
 
-from routes import index, admin, playlists, tracks, comments, user
+from routes import admin, comments, index, playlists, tracks, user
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
