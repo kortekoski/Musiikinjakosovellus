@@ -15,7 +15,9 @@ Sovelluksen ominaisuudet:
 
 ## Testausohjeet
 
-Sovellus on valitettavasti testattavissa vain lokaalisti. Sovelluksen käyttäminen vaatii, että python3 ja postgresql on asennettu. Ohjeet testaamiseen ovat seuraavat:
+Sovellusta voi testata osoitteessa https://musiikinjakosovellus-two.fly.dev/.
+
+Sovellus on testattavissa myös lokaalisti. Sovelluksen käyttäminen vaatii, että python3 ja postgresql on asennettu. Ohjeet testaamiseen ovat seuraavat:
 
 Kloonaa tämä repositorio omalle koneellesi ja siirry sen juurikansioon.
 
